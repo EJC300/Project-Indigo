@@ -10,6 +10,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f0c11988ea167524f8d76c50fc7602f5, type: 3}
-  m_Name: FadeOut
+  m_Name: ToMainMenu
   m_EditorClassIdentifier: Assembly-CSharp::GameInfrastructure.VoidGameEvent
-  EventName: FadeOut
+  EventName: ToMainMenu

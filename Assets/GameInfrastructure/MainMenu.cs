@@ -3,21 +3,17 @@ namespace GameInfrastructure
 {
     public class MainMenu : MonoBehaviour
     {
-        public GameManager gameManager;
-
-        private void Awake()
-        {
-            gameManager = GameManager.instance;
-        }
+        public VoidGameEvent OnExitGame;
+        public VoidGameEvent OnEnterInstantAction;
 
         public void ExitGame()
         {
-            gameManager.exitGame?.FireEvent();
+            OnExitGame?.FireEvent();
         }
 
         public void EnterInstantActionMode()
         {
-            gameManager.goToInstantAction?.FireEvent();
+            OnEnterInstantAction?.FireEvent();
         }
     }
 }

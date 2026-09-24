@@ -3,7 +3,7 @@ namespace GameInfrastructure
 {
     public class MainMenu : MonoBehaviour
     {
-        private GameManager gameManager;
+        public GameManager gameManager;
 
         private void Awake()
         {

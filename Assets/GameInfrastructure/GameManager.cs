@@ -3,10 +3,11 @@ namespace GameInfrastructure
 {
     public class GameManager : MonoBehaviour
     {
-
+        //Combine Managers with Events - Events are registered within managers but fired in other classes that have registered the managers
+        //May need to refactor into call back functions however no idea how to do that? That will forgo the singleton abuse
         //Level Loader ---- Loads the level configured scene
-
-        public static GameManager instance;
+       private LevelLoader LevelLoader { get; set; }
+       public static GameManager instance;
 
         public VoidGameEvent exitGame;
 
@@ -19,7 +20,7 @@ namespace GameInfrastructure
         public BoolGameEvent pauseGameToggle;
 
 
-        public void Awake()
+        public void Start()
         {
             DontDestroyOnLoad(gameObject);
             if (instance == null)
@@ -30,26 +31,21 @@ namespace GameInfrastructure
             {
                 Destroy(instance.gameObject);
             }
+            LevelLoader = LevelLoader.instance;
         }
 
-        public void OnEnable()
-        {
-            exitGame.voidEventToFire += QuiteGame;
-            goToInstantAction.voidEventToFire += SelectInstantAction;
-        }
-
-        public void OnDisable()
-        {
-            exitGame.voidEventToFire -= QuiteGame;
-            goToInstantAction.voidEventToFire -= SelectInstantAction;
-        }
+     
         void SelectInstantAction()
         {
             Debug.Log("SelectInstantAction");
+            int instantAction = 1;
+            LevelLoader.LoadLevel(instantAction);
         }
         void SelectMainMenu()
         {
             Debug.Log("SelectMainMenu");
+            int mainMenu = 0;
+            LevelLoader.LoadLevel(mainMenu);
         }
         void QuiteGame()
         {

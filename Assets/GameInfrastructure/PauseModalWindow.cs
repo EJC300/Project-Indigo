@@ -1,16 +1,26 @@
 using UnityEngine;
-
-public class PauseModalWindow : MonoBehaviour
+namespace GameInfrastructure
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public class PauseModalWindow : MonoBehaviour
     {
+        public VoidGameEvent PauseModalWindowWindowOpenEvent;
+        public VoidGameEvent PauseModalWindowWindowCloseEvent;
+        public VoidGameEvent PauseModalWindowWindowReturnToMainMenuEvent;
         
-    }
+        public void OnClosePauseWindow()
+        {
+            PauseModalWindowWindowCloseEvent?.FireEvent();
+        }
+        public void OnOpenPauseWindow()
+        {
+            PauseModalWindowWindowOpenEvent?.FireEvent();
+        }
+        public void OnReturnToMainMenu()
+        {
+            PauseModalWindowWindowReturnToMainMenuEvent?.FireEvent();
+        }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+
+
     }
 }

@@ -36,7 +36,7 @@ namespace Aircraft
             }
           
             float targetThrustForEngine = targetThrustRatio * engineParameters.totalThrust;
-            Debug.Log(targetThrustForEngine);
+           
 
             thrustRatio = Mathf.MoveTowards(thrustRatio,targetThrustForEngine, engineParameters.throttleSpeed * Time.fixedDeltaTime);
             
@@ -45,7 +45,7 @@ namespace Aircraft
             currentThrust = Mathf.Lerp(currentThrust,thrustRatio, engineParameters.engineSpoolSpeed * Time.fixedDeltaTime);
           
             float appliedThrust = Mathf.Clamp(currentThrust, engineParameters.totalThrust * engineParameters.idleThrustRatio, engineParameters.totalThrust * engineParameters.afterBurnerThrustRatio);
-            Debug.Log(appliedThrust);
+            
             return Vector3.forward * appliedThrust;
         }
         

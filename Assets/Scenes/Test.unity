@@ -211,6 +211,51 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &770233074
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 770233076}
+  - component: {fileID: 770233075}
+  m_Layer: 0
+  m_Name: Player
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &770233075
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 770233074}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a798533ad3a60b408ce23807fc4f049, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Aircraft.TestControls
+  controller: {fileID: 1061476933}
+--- !u!4 &770233076
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 770233074}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.5, y: 0.13472, z: 0.04279}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1061476925
 GameObject:
   m_ObjectHideFlags: 0
@@ -226,6 +271,7 @@ GameObject:
   - component: {fileID: 1061476926}
   - component: {fileID: 1061476932}
   - component: {fileID: 1061476933}
+  - component: {fileID: 1061476934}
   m_Layer: 0
   m_Name: Plane
   m_TagString: Untagged
@@ -380,6 +426,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Aircraft.AircraftController
   specifications: {fileID: 11400000, guid: 7b10ae6c8ced3104eb638a73a1d99768, type: 2}
   aircraftThrust: {fileID: 1061476926}
+--- !u!114 &1061476934
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1061476925}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b25827b360e7a1143b45bf69cf25756d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TestLift
+  body: {fileID: 1061476932}
+  liftStrength: 0.075
 --- !u!1 &1819064783
 GameObject:
   m_ObjectHideFlags: 0
@@ -484,3 +544,4 @@ SceneRoots:
   - {fileID: 527642739}
   - {fileID: 1819064785}
   - {fileID: 1061476931}
+  - {fileID: 770233076}

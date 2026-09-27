@@ -39,7 +39,7 @@ namespace Aircraft
     public void ApplyThrottle(float thrust)
     {
         aircraftEngineThrustForce = aircraftThrust.ApplyThrust(thrust,specifications.engineParameters);
-        Debug.Log(aircraftEngineThrustForce.ToString());
+
     }
 
     void ApplyAircraftForces()

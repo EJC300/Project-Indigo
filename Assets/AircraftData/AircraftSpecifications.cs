@@ -6,5 +6,6 @@ namespace AircraftData {
     {
         public float aircraftMass;
         public EngineParameters engineParameters;
+        
     }
 }

@@ -5,7 +5,11 @@ namespace Aircraft
     public class AircraftThrust : MonoBehaviour
     {
         //Test Thrust Variables delete after testing complete
-        [SerializeField] private Rigidbody rb;
+        private Rigidbody rb;
+        public void SetRigidBody(Rigidbody rb)
+        {
+            this.rb = rb;
+        }
 
         private float throttleAmount;
         private float targetThrustRatio;

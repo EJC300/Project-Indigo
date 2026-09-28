@@ -34,6 +34,21 @@ namespace AircraftData {
         {
             return Mathf.Atan2(AirCraftLinearVelocity().y, AirCraftLinearVelocity().z) * Mathf.Rad2Deg;
         }
+
+        float CalculateLift()
+        {
+            float aoa = AngleOfAttack();
+
+            float appliedAOA = Mathf.Clamp(aoa,-aerodynamicParameters.stallAngle,aerodynamicParameters.stallAngle);
+             
+            float speedSquared = AirCraftLinearVelocity().sqrMagnitude;
+
+            float halfSpeed = 0.5f * speedSquared;
+            float liftPowerTimesSpeed = halfSpeed * aerodynamicParameters.liftPower;
+            float liftCoefficient = speedSquared * liftPowerTimesSpeed * appliedAOA;
+
+            return liftCoefficient;
+        }
         float CalculateDrag()
         {
             float speedSquared = AirCraftLinearVelocity().sqrMagnitude;
@@ -52,9 +67,19 @@ namespace AircraftData {
 
             rb.AddForce(dragForce);
         }
+        void ApplyLift()
+        {
+            Vector3 flightDirection = ( AirCraftLinearVelocity()).normalized;
+            Vector3 liftDirection = Vector3.Cross(flightDirection, transform.right).normalized;
+
+            Vector3 liftForce = liftDirection * CalculateLift();
+
+            rb.AddForce(liftForce);
+        }
         private void FixedUpdate()
         {
             ApplyDrag();
+            ApplyLift();
         }
 
     }

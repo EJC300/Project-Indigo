@@ -377,13 +377,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1061476925}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0.20922203, w: 0.9778682}
-  m_LocalPosition: {x: 1.47, y: 8.02, z: -0.018}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.47, y: 13.274, z: -0.018}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -24.154}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &1061476932
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -434,11 +434,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1061476925}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b25827b360e7a1143b45bf69cf25756d, type: 3}
+  m_Script: {fileID: 11500000, guid: 6aeb28f4ffbece74488a373f377b1fba, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TestLift
-  body: {fileID: 1061476932}
-  liftStrength: 1250
+  m_EditorClassIdentifier: Assembly-CSharp::AircraftData.Aerobody
+  aircraftSpecifications: {fileID: 11400000, guid: 7b10ae6c8ced3104eb638a73a1d99768, type: 2}
 --- !u!1 &1819064783
 GameObject:
   m_ObjectHideFlags: 0

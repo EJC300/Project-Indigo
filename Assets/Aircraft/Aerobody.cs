@@ -30,10 +30,19 @@ namespace AircraftData {
         {
             return rb.linearVelocity;
         }
+        private Vector3 LocalAircraftVelocity()
+        {
+            return transform.InverseTransformDirection(rb.linearVelocity);
+        }
+       
         private float AngleOfAttack()
         {
-            return Mathf.Atan2(AirCraftLinearVelocity().y, AirCraftLinearVelocity().z) * Mathf.Rad2Deg;
+            return Mathf.Atan2(LocalAircraftVelocity().y, LocalAircraftVelocity().z) * Mathf.Rad2Deg;
         }
+
+      
+      
+        
 
         float CalculateLift()
         {
@@ -49,6 +58,15 @@ namespace AircraftData {
 
             return liftCoefficient;
         }
+        float CalculateInducedDrag()
+        {
+            float liftCoef = CalculateLift();
+            float liftSquared = CalculateLift() * CalculateLift();
+            float inducedDrag = liftSquared * aerodynamicParameters.inducedDragFactor;
+
+            return -inducedDrag;
+        }
+        
         float CalculateDrag()
         {
             float speedSquared = AirCraftLinearVelocity().sqrMagnitude;
@@ -67,19 +85,35 @@ namespace AircraftData {
 
             rb.AddForce(dragForce);
         }
+        void ApplyInducedDrag()
+        {
+            Vector3 flightDirection = (AirCraftLinearVelocity()).normalized;
+            float inducedDragCoef = CalculateInducedDrag();
+            Vector3 liftDirection = Vector3.Cross(flightDirection, transform.right).normalized;
+            Vector3 inducedDragDirection = Vector3.Cross(liftDirection, transform.up);
+            Vector3 inducedDragForce = inducedDragDirection * CalculateInducedDrag();
+            rb.AddRelativeForce(inducedDragForce);
+        }
         void ApplyLift()
         {
             Vector3 flightDirection = ( AirCraftLinearVelocity()).normalized;
             Vector3 liftDirection = Vector3.Cross(flightDirection, transform.right).normalized;
-
-            Vector3 liftForce = liftDirection * CalculateLift();
+            float liftCoef = CalculateLift();
+            
+            Vector3 liftForce = liftDirection * liftCoef;
 
             rb.AddForce(liftForce);
+            //Add Some Torque based on liftForce
+            Vector3 liftTorque = Vector3.Cross(liftForce, LocalAircraftVelocity().normalized);
+            Debug.Log(liftTorque);
+            rb.AddTorque(liftTorque);
         }
         private void FixedUpdate()
         {
             ApplyDrag();
+            ApplyInducedDrag();
             ApplyLift();
+            
         }
 
     }

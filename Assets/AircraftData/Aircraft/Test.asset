@@ -23,7 +23,7 @@ MonoBehaviour:
     adverseYawFactor: 0
     dragPower: 0.016
     sideDragPower: 0
-    liftPower: 50
+    liftPower: 20
     stallAngle: 15
     postStallLiftFraction: 0
     stallSoftness: 0

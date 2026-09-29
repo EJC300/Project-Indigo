@@ -10,13 +10,16 @@ namespace AircraftData {
         private AircraftThrust thrust;
 
         private AerodynamicParameters aerodynamicParameters;
-
-
+        private ControlParameters controlParameters;
+        private float pitchControlAuthority;
+        private float yawControlAuthority;
+        private float rollControlAuthority;
         private void Start()
         {
             rb = GetComponent<Rigidbody>();
             thrust = GetComponent<AircraftThrust>();
             aerodynamicParameters = aircraftSpecifications.aerodynamicParameters;
+            controlParameters = aircraftSpecifications.controlParameters;
             thrust.SetRigidBody(rb);
             rb.mass = aircraftSpecifications.aircraftMass;
             
@@ -25,6 +28,9 @@ namespace AircraftData {
            
       
         }
+
+
+
 
         private Vector3 AirCraftLinearVelocity()
         {
@@ -107,8 +113,8 @@ namespace AircraftData {
             rb.AddForce(liftForce);
           
             //Add Some Torque based on liftForce
-            Vector3 liftTorque = Vector3.Cross(liftForce.normalized, LocalAircraftVelocity().normalized);
-          
+            Vector3 liftTorque = Vector3.Cross(liftForce.normalized,transform.up);
+            
             rb.AddTorque(liftTorque);
         }
         private void FixedUpdate()

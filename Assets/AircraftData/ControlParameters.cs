@@ -7,6 +7,9 @@ namespace AircraftData
         public float pitchStrength, yawStrength, rollStrength;
 
         public float targetRates;
-        
+
+        public float brakeStrength;
+
+        public float maxAOA;
     }
 }

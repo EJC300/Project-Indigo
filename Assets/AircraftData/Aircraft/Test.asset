@@ -21,16 +21,18 @@ MonoBehaviour:
     idleThrustRatio: 0.05
   aerodynamicParameters:
     adverseYawFactor: 0
-    dragPower: 0.016
+    dragPower: 0.006
     sideDragPower: 0
-    liftPower: 20
+    liftPower: 100
     stallAngle: 15
     postStallLiftFraction: 0
     stallSoftness: 0
     inducedDragFactor: 0.02
     maxLift: 0
   controlParameters:
-    pitchStrength: 0
+    pitchStrength: 5
     yawStrength: 0
     rollStrength: 0
     targetRates: 0
+    brakeStrength: 0
+    maxAOA: 0

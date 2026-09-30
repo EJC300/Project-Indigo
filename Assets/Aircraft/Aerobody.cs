@@ -11,9 +11,11 @@ namespace AircraftData {
 
         private AerodynamicParameters aerodynamicParameters;
         private ControlParameters controlParameters;
-        private float pitchControlAuthority;
+    
         private float yawControlAuthority;
         private float rollControlAuthority;
+        private float AOA;
+        private float stallTorque;
         private void Start()
         {
             rb = GetComponent<Rigidbody>();
@@ -29,8 +31,7 @@ namespace AircraftData {
       
         }
 
-
-
+       
 
         private Vector3 AirCraftLinearVelocity()
         {
@@ -47,7 +48,13 @@ namespace AircraftData {
         }
 
       
-      
+        void ApplyPitch()
+        {
+            float forwardVelocity = Vector3.Dot(LocalAircraftVelocity(),transform.forward);
+            float forwardVelocityHalfSquared = (forwardVelocity * forwardVelocity) * 0.5f;
+            float controlAuthority = forwardVelocityHalfSquared * controlParameters.pitchStrength;
+            rb.AddRelativeTorque(Vector3.right * controlAuthority * Input.GetAxis("Horizontal"));
+        }
         
 
         float CalculateLift()
@@ -60,10 +67,11 @@ namespace AircraftData {
 
             float halfSpeed = 0.5f * speedSquared;
             float liftPowerTimesSpeed = halfSpeed * aerodynamicParameters.liftPower;
-            float liftCoefficient = speedSquared * liftPowerTimesSpeed * appliedAOA;
+            float liftCoefficient = liftPowerTimesSpeed * appliedAOA;
             float maxLift = aerodynamicParameters.liftPower * rb.mass * 0.5f;
 
             liftCoefficient = Mathf.Clamp(liftCoefficient, -maxLift, maxLift);
+            AOA = appliedAOA;
             return liftCoefficient;
         }
         float CalculateInducedDrag()
@@ -71,7 +79,7 @@ namespace AircraftData {
             float liftCoef = Mathf.Sqrt( CalculateLift() * CalculateLift());
            ;
             float inducedDrag = liftCoef * aerodynamicParameters.inducedDragFactor;
-
+        
             return inducedDrag;
         }
         
@@ -104,25 +112,38 @@ namespace AircraftData {
         }
         void ApplyLift()
         {
-            Vector3 flightDirection = ( AirCraftLinearVelocity()).normalized;
-            Vector3 liftDirection = Vector3.Cross(flightDirection, -transform.right).normalized;
-            float liftCoef = CalculateLift();
-         
-            Vector3 liftForce = liftDirection * liftCoef;
+            if (LocalAircraftVelocity().z > 0)
+            {
 
-            rb.AddForce(liftForce);
-          
-            //Add Some Torque based on liftForce
-            Vector3 liftTorque = Vector3.Cross(liftForce.normalized,transform.up);
-            
-            rb.AddTorque(liftTorque);
+
+                Vector3 flightDirection = (AirCraftLinearVelocity()).normalized;
+                Vector3 liftDirection = Vector3.Cross(flightDirection, -transform.right).normalized;
+                float liftCoef = CalculateLift();
+
+                Vector3 liftForce = liftDirection * liftCoef;
+
+                rb.AddForce(liftForce);
+
+                //Add Some Torque based on liftForce
+                Vector3 liftTorque = Vector3.Cross(liftForce.normalized, transform.up);
+
+                rb.AddTorque(liftTorque);
+                stallTorque = liftCoef * 0.005f;
+                Debug.Log(liftCoef);
+                if (LocalAircraftVelocity().z < 25 & AOA< aerodynamicParameters.stallAngle)
+                {
+                    
+                    //rb.AddTorque(-stallTorque * Vector3.right);
+                }
+            }
         }
         private void FixedUpdate()
         {
+         
             ApplyDrag();
             ApplyInducedDrag();
             ApplyLift();
-            
+            ApplyPitch();
         }
 
     }

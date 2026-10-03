@@ -4,7 +4,7 @@ namespace Aircraft
 {
     public class AircraftThrust : MonoBehaviour
     {
-        //Test Thrust Variables delete after testing complete
+       
         private Rigidbody rb;
         public void SetRigidBody(Rigidbody rb)
         {

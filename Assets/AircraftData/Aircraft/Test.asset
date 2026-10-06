@@ -20,13 +20,99 @@ MonoBehaviour:
     afterBurnerThrustRatio: 1.5
     idleThrustRatio: 0.05
   aerodynamicParameters:
+    aoaCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: -15
+        value: 0.9933281
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 0
+        value: 0.5
+        inSlope: -0.050444826
+        outSlope: -0.050444826
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 5
+        value: -0.5
+        inSlope: -0.12968534
+        outSlope: -0.12968534
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 15
+        value: 0.01
+        inSlope: 2
+        outSlope: 2
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    dragCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    inducedDragCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: 2
+        outSlope: 2
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 200
+        value: 0
+        inSlope: 0.24896926
+        outSlope: 0.24896926
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    stallCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
     adverseYawFactor: 0
-    dragPower: 0.01
+    dragPower: 15
     sideDragPower: 0
-    liftPower: 0.2
+    liftPower: 200
     stallAngle: 15
-    postStallLiftFraction: 0
-    inducedDragFactor: 0.02
+    inducedDragPower: 1
   controlParameters:
     pitchStrength: 5
     yawStrength: 0

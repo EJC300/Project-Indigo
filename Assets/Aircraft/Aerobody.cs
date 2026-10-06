@@ -43,11 +43,24 @@ namespace AircraftData
         {
             return aerodynamicParameters.aoaCurve.Evaluate(CalculateAOADegress());
         }
+        private float EvaluateInducedDragCurve()
+        {
+            float speed = Mathf.Max(0,flightVelocity.magnitude);
+            float aoaMultiplier = EvaluateAOACurve();
+            Debug.Log(aoaMultiplier);
+            return aerodynamicParameters.inducedDragCurve.Evaluate(speed) * aerodynamicParameters.inducedDragPower * aoaMultiplier;
+        }
        public Vector3 dragDirection;
        
         
        public Vector3 liftDirection;
-
+       void ApplyInducedDrag()
+        {
+           Vector3 inducedDragDirection = -Vector3.Cross(liftDirection, transform.right);
+           Vector3 inducedDragForce = inducedDragDirection *  EvaluateInducedDragCurve();
+        
+           rb.AddForce(inducedDragForce);
+        }
         void CalculateAndApplyLift()
         {
             float drag = 0.5f * q * aerodynamicParameters.dragPower;
@@ -57,9 +70,9 @@ namespace AircraftData
             Vector3 dragForce =drag * dragDirection;
             liftDirection = Vector3.Cross(Vector3.Cross(localVelocity, dragDirection).normalized, -transform.right).normalized;
             Vector3 force = dragForce + (liftDirection * cl);
-            Debug.Log(force * rb.mass * 0.001f);
+         
             Debug.DrawRay(transform.position, force);
-            rb.AddForce(force * rb.mass * 0.001f);
+            rb.AddRelativeForce(force * rb.mass * 0.001f);
         }
    
         void ApplyTorqueDrag()
@@ -81,7 +94,7 @@ namespace AircraftData
         {
             
             CalculateAndApplyLift();
-         
+            ApplyInducedDrag();
             ApplyTorqueDrag();
         }
     }

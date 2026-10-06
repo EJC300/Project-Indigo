@@ -3,6 +3,7 @@ using UnityEngine;
 public class PlaneThrustTest : MonoBehaviour
 {
      Rigidbody rb;
+    [SerializeField] private float thrustSpeed;
     void Start()
     {
         rb = GetComponentInParent<Rigidbody>();
@@ -11,7 +12,7 @@ public class PlaneThrustTest : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        rb.AddForce(transform.forward  * 25 * rb.mass);
-        Debug.Log(rb.linearVelocity.magnitude);
+        rb.AddForce(transform.forward  * thrustSpeed * rb.mass);
+     //   Debug.Log(rb.linearVelocity.magnitude);
     }
 }

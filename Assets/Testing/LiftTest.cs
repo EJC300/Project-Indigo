@@ -14,7 +14,7 @@ public class LiftTest : MonoBehaviour
     Vector3 previousAngularVelocity;
     Vector3 control;
     public float aoaDeg;
-
+    public float inducedDragFactor;
 
 
    
@@ -24,7 +24,7 @@ public class LiftTest : MonoBehaviour
         float speedSquared = 0.5f * localVelocity.magnitude * localVelocity.magnitude;
         angularVelocity = transform.InverseTransformDirection( rb.angularVelocity);
         float pitchDiff =  (pitch * speedSquared  * 5 ) - ( previousAngularVelocity.x) * rb.mass ;
-        float rollDiff = (roll * speedSquared * -5) - (previousAngularVelocity.z) * rb.mass;
+        float rollDiff = (roll * speedSquared * -15) - (previousAngularVelocity.z) * rb.mass;
         
          control = new Vector3(pitchDiff , -previousAngularVelocity.y * rb.mass, rollDiff);
         
@@ -38,7 +38,7 @@ public class LiftTest : MonoBehaviour
         Vector3 linearVelocity = rb.linearVelocity;
         float speed = localVelocity.magnitude ;
         bool atMaxStall = rb.linearVelocity.magnitude < maxStallSpeed && transform.localEulerAngles.x > maxStallAngle;
-        Debug.Log(rb.linearVelocity.magnitude);
+       
         if (atMaxStall)
         {
             Debug.Log("Stall");
@@ -67,13 +67,20 @@ public class LiftTest : MonoBehaviour
 
         Vector3 liftForce = totalLift * liftDirection;
         float sideSlip = Vector3.Dot((transform.right).normalized, Vector3.up) * -linearVelocity.magnitude ;
+        float inducedDragLimit = totalLift;
+        inducedDragLimit = Mathf.Lerp(inducedDragFactor, 0, speedSquared * 0.001f * Time.fixedDeltaTime);
        
-        
-        float angle = Vector3.Dot(transform.up,Vector3.up);
-        Vector3 weatherVeinEffect = rb.mass * 0.001f *  sideSlip * Vector3.up;
+        Debug.Log(inducedDragLimit);
 
-        rb.AddRelativeTorque(weatherVeinEffect);
-        rb.AddForce(liftForce);
+        float inducedDrag = aoaFinal * totalLift * inducedDragFactor * rb.mass * inducedDragLimit * 0.01f;
+        Vector3 inducedDragForce = inducedDrag * Vector3.Cross(liftDirection, transform.right);
+        
+   
+        Vector3 weatherVeinEffect = rb.mass * 0.001f *  sideSlip * Vector3.up;
+        Vector3 liftTorque =  Vector3.Cross(liftDirection,transform.up) * liftCoefficient * 0.05f;
+        rb.AddRelativeTorque(weatherVeinEffect );
+       
+        rb.AddForce(liftForce + inducedDragForce);
     }
    
     private void Start()
@@ -93,8 +100,10 @@ public class LiftTest : MonoBehaviour
         {
             rb.AddRelativeForce(Vector3.forward * 45 * rb.mass);
         }
+
+        //Needs to put the drag in the lift calculation then the test will be complete
         Stall();
-            ApplyLift();
+        ApplyLift();
      
 
       

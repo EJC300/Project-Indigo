@@ -33,6 +33,7 @@ namespace Player
         }
         void OpenClosePauseWindow()
         {
+            
 
             if (openClosePauseWindowAction.WasPressedThisFrame())
             {

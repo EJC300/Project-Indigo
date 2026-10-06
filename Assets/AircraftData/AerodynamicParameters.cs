@@ -16,10 +16,8 @@ namespace AircraftData
 
         public float postStallLiftFraction;
 
-        public float stallSoftness;
-
         public float inducedDragFactor;
 
-        public float maxLift;
+      
     }
 }

@@ -11,6 +11,7 @@ public class PlaneThrustTest : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        rb.AddForce(transform.forward * 25 * rb.mass);
+        rb.AddForce(transform.forward  * 25 * rb.mass);
+        Debug.Log(rb.linearVelocity.magnitude);
     }
 }

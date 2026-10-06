@@ -55,24 +55,24 @@ namespace Player
         void SetThrottle()
         {
             float leverInput=  throttleAction.ReadValue<float>();
-            Debug.Log(leverInput);
+        
         }
 
         void RollInput()
         {
             float roll = rollAction.ReadValue<float>();
-            Debug.Log(roll);
+         
         }
         void PitchInput()
         {
             float pitch = pitchAction.ReadValue<float>();
-            Debug.Log(pitch);
+        
         }
 
         void YawInput()
         {
             float yaw = yawAction.ReadValue<float>();
-            Debug.Log(yaw);
+
         }
 
     }

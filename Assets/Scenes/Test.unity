@@ -354,6 +354,7 @@ GameObject:
   - component: {fileID: 384187507}
   - component: {fileID: 384187511}
   - component: {fileID: 384187512}
+  - component: {fileID: 384187513}
   m_Layer: 0
   m_Name: CrashTestPlane
   m_TagString: Untagged
@@ -369,8 +370,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 384187502}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.001927581, y: -0.011108753, z: 0.00002141338, w: 0.99993646}
-  m_LocalPosition: {x: 0.050070733, y: 500.91077, z: -0.15327358}
+  m_LocalRotation: {x: -0.0008535662, y: -0.49161994, z: -0.0019733687, w: 0.8708073}
+  m_LocalPosition: {x: -0.43628693, y: 503.5507, z: -16.660084}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -383,7 +384,7 @@ Transform:
   - {fileID: 527642739}
   - {fileID: 732343641}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0.221, y: -1.273, z: 0}
+  m_LocalEulerAnglesHint: {x: -0.196, y: -58.894, z: -0.149}
 --- !u!54 &384187511
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -393,7 +394,7 @@ Rigidbody:
   m_GameObject: {fileID: 384187502}
   serializedVersion: 5
   m_Mass: 16000
-  m_LinearDamping: 0.008
+  m_LinearDamping: 0.001
   m_AngularDamping: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
@@ -420,14 +421,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 384187502}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ecda3e161c46619409b3b37f13bad0d2, type: 3}
+  m_Script: {fileID: 11500000, guid: 6aeb28f4ffbece74488a373f377b1fba, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::LiftTest
-  liftPower: 200
-  maxStallAngle: 15
-  maxStallSpeed: 100
-  aoaDeg: 0
-  inducedDragFactor: 0
+  m_EditorClassIdentifier: Assembly-CSharp::AircraftData.Aerobody
+  airSpecifications: {fileID: 11400000, guid: 7b10ae6c8ced3104eb638a73a1d99768, type: 2}
+--- !u!114 &384187513
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 384187502}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed0acc71a64dbae4c92e5166e45d59ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlaneThrustTest
 --- !u!1 &527642736
 GameObject:
   m_ObjectHideFlags: 0

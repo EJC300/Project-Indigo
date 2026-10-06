@@ -4,6 +4,11 @@ namespace AircraftData
     [System.Serializable]
     public class AerodynamicParameters
     {
+
+        public AnimationCurve aoaCurve;
+        public AnimationCurve dragCurve;
+        public AnimationCurve inducedDragCurve;
+        public AnimationCurve stallCurve;
         public float adverseYawFactor;
 
         public float dragPower;
@@ -14,9 +19,7 @@ namespace AircraftData
 
         public float stallAngle;
 
-        public float postStallLiftFraction;
-
-        public float inducedDragFactor;
+        public float inducedDragPower;
 
       
     }

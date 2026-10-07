@@ -376,15 +376,15 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 384187502}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.6283831, y: 503.11798, z: -21.32609}
+  m_LocalRotation: {x: 0, y: 0.06902523, z: 0, w: 0.9976149}
+  m_LocalPosition: {x: 0.9008717, y: 513.653, z: -21.141277}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 314720501}
   - {fileID: 527642739}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 7.916, z: 0}
 --- !u!54 &384187511
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -425,7 +425,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AircraftData.Aerobody
   airSpecifications: {fileID: 11400000, guid: 7b10ae6c8ced3104eb638a73a1d99768, type: 2}
-  cl: 0
   dragDirection: {x: 0, y: 0, z: 0}
   liftDirection: {x: 0, y: 0, z: 0}
 --- !u!114 &384187513
@@ -437,10 +436,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 384187502}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ed0acc71a64dbae4c92e5166e45d59ec, type: 3}
+  m_Script: {fileID: 11500000, guid: 8020c5be14ecb9f4581a36479e2b3245, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlaneThrustTest
-  thrustSpeed: 200
+  m_EditorClassIdentifier: Assembly-CSharp::Aircraft.AircraftThrust
+  rb: {fileID: 0}
 --- !u!1 &527642736
 GameObject:
   m_ObjectHideFlags: 0
@@ -623,6 +622,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player.PlayerInputFlightController
   inputAsset: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  aircraftController: {fileID: 384187512}
   pitchName: Pitch
   yawName: Yaw
   rollName: Roll
@@ -775,6 +775,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8020c5be14ecb9f4581a36479e2b3245, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Aircraft.AircraftThrust
+  rb: {fileID: 0}
 --- !u!65 &1061476928
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -922,7 +923,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AircraftData.Aerobody
   airSpecifications: {fileID: 11400000, guid: 7b10ae6c8ced3104eb638a73a1d99768, type: 2}
-  cl: 0
   dragDirection: {x: 0, y: 0, z: 0}
   liftDirection: {x: 0, y: 0, z: 0}
 --- !u!114 &1061476935

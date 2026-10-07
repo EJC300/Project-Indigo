@@ -1,3 +1,5 @@
+using Aircraft;
+using AircraftData;
 using UnityEngine;
 using UnityEngine.InputSystem;
 namespace Player
@@ -8,7 +10,7 @@ namespace Player
 
         private InputActionMap inputActions;
 
-       
+        [SerializeField] private PlaneController aircraftController;
       
 
 
@@ -41,7 +43,7 @@ namespace Player
             
         }
 
-        private void Update()
+        private void FixedUpdate()
         {
         
             
@@ -55,7 +57,8 @@ namespace Player
         void SetThrottle()
         {
             float leverInput=  throttleAction.ReadValue<float>();
-        
+            Debug.Log(leverInput);
+            aircraftController.ApplyThrottle(leverInput);
         }
 
         void RollInput()
@@ -66,7 +69,7 @@ namespace Player
         void PitchInput()
         {
             float pitch = pitchAction.ReadValue<float>();
-        
+            aircraftController.ApplyPitch(pitch);
         }
 
         void YawInput()

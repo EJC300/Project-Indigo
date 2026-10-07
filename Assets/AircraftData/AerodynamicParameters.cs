@@ -21,6 +21,8 @@ namespace AircraftData
 
         public float inducedDragPower;
 
+        public float stallSpeed;
+
       
     }
 }

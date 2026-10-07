@@ -52,7 +52,7 @@ MonoBehaviour:
         outWeight: 0.33333334
       - serializedVersion: 3
         time: 15
-        value: 0.01
+        value: -1
         inSlope: 2
         outSlope: 2
         tangentMode: 0
@@ -113,8 +113,9 @@ MonoBehaviour:
     liftPower: 200
     stallAngle: 15
     inducedDragPower: 1
+    stallSpeed: 98
   controlParameters:
-    pitchStrength: 5
+    pitchStrength: 25
     yawStrength: 0
     rollStrength: 0
     targetRates: 0

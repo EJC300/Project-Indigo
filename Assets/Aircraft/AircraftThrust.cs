@@ -5,11 +5,8 @@ namespace Aircraft
     public class AircraftThrust : MonoBehaviour
     {
        
-        private Rigidbody rb;
-        public void SetRigidBody(Rigidbody rb)
-        {
-            this.rb = rb;
-        }
+       public Rigidbody rb;
+    
 
         private float throttleAmount;
         private float targetThrustRatio;
@@ -17,7 +14,10 @@ namespace Aircraft
         private float currentThrust;
         private float thrustRatio;
 
-  
+        private void Start()
+        {
+            rb = GetComponent<Rigidbody>();
+        }
         public Vector3 ApplyThrust(float input,EngineParameters engineParameters)
         {
             
@@ -50,7 +50,7 @@ namespace Aircraft
           
             float appliedThrust = Mathf.Clamp(currentThrust, engineParameters.totalThrust * engineParameters.idleThrustRatio, engineParameters.totalThrust * engineParameters.afterBurnerThrustRatio);
             
-            return Vector3.forward * appliedThrust;
+            return appliedThrust * Vector3.forward;
         }
         
 

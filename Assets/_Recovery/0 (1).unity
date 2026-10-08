@@ -376,15 +376,15 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 384187502}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0.06902523, z: 0, w: 0.9976149}
-  m_LocalPosition: {x: 0.9008717, y: 266, z: -21.141277}
+  m_LocalRotation: {x: 0.04880821, y: 0.04880821, z: 0.70542026, w: 0.70542026}
+  m_LocalPosition: {x: 0.9008717, y: 513.653, z: -21.141277}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 314720501}
   - {fileID: 527642739}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 7.916, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 7.916, z: 90}
 --- !u!54 &384187511
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -425,14 +425,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AircraftData.Aerobody
   airSpecifications: {fileID: 11400000, guid: 7b10ae6c8ced3104eb638a73a1d99768, type: 2}
-  aeroForceScale: 0.0001
-  gLimiterSoftRange: 2
-  noseDropStrength: 1.5
-  angularDamping: {x: 1.5, y: 1, z: 1.5}
-  rollStrength: 4
-  yawStrength: 1.5
-  sideslipDrag: 0.7
-  sideslipStability: 1
+  previousVelocity: {x: 0, y: 0, z: 0}
+  currentVelocity: {x: 0, y: 0, z: 0}
   dragDirection: {x: 0, y: 0, z: 0}
   liftDirection: {x: 0, y: 0, z: 0}
 --- !u!114 &384187513
@@ -931,14 +925,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AircraftData.Aerobody
   airSpecifications: {fileID: 11400000, guid: 7b10ae6c8ced3104eb638a73a1d99768, type: 2}
-  aeroForceScale: 0.001
-  gLimiterSoftRange: 2
-  noseDropStrength: 1.5
-  angularDamping: {x: 1.5, y: 1, z: 1.5}
-  rollStrength: 4
-  yawStrength: 1.5
-  sideslipDrag: 0.5
-  sideslipStability: 1
+  previousVelocity: {x: 0, y: 0, z: 0}
+  currentVelocity: {x: 0, y: 0, z: 0}
   dragDirection: {x: 0, y: 0, z: 0}
   liftDirection: {x: 0, y: 0, z: 0}
 --- !u!114 &1061476935
@@ -1382,8 +1370,8 @@ Transform:
   m_GameObject: {fileID: 2057877949}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 10000, y: 10000, z: 10000}
+  m_LocalPosition: {x: -0.5, y: 0, z: -0.2705}
+  m_LocalScale: {x: 463.88715, y: 463.88715, z: 463.88715}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}

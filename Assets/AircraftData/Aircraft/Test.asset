@@ -108,14 +108,16 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
     adverseYawFactor: 0
-    dragPower: 15
+    dragPower: 30
     sideDragPower: 0
     liftPower: 200
     stallAngle: 15
-    inducedDragPower: 1
+    inducedDragPower: 25
     stallSpeed: 98
   controlParameters:
-    pitchStrength: 25
+    maxGlimit: 9
+    minGlimit: 3
+    pitchStrength: 5
     yawStrength: 0
     rollStrength: 0
     targetRates: 0

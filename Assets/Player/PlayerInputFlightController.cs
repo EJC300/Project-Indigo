@@ -57,13 +57,14 @@ namespace Player
         void SetThrottle()
         {
             float leverInput=  throttleAction.ReadValue<float>();
-            Debug.Log(leverInput);
+           
             aircraftController.ApplyThrottle(leverInput);
         }
 
         void RollInput()
         {
             float roll = rollAction.ReadValue<float>();
+            aircraftController.ApplyRoll(roll);
          
         }
         void PitchInput()
@@ -75,6 +76,7 @@ namespace Player
         void YawInput()
         {
             float yaw = yawAction.ReadValue<float>();
+            aircraftController.ApplyYaw(yaw);
 
         }
 

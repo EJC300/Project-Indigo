@@ -1,242 +1,167 @@
-using Aircraft;
+
+
 using UnityEngine;
 using Utilities;
 
-namespace AircraftData
+namespace Aircraft
 {
     [RequireComponent(typeof(Rigidbody))]
     public class PlaneController : MonoBehaviour
     {
-        [SerializeField] AircraftSpecifications airSpecifications;
 
-        [Header("Tuning")]
-        [Tooltip("Scales aero forces. 0.001 matches the old (mass * 0.001) hack.")]
-        [SerializeField] float aeroForceScale = 0.001f;
-        [Tooltip("How many G of headroom before the limiter fully cuts pitch input.")]
-        [SerializeField] float gLimiterSoftRange = 2f;
-        [Tooltip("Nose-drop torque (rad/s^2) when below stall speed.")]
-        [SerializeField] float noseDropStrength = 1.5f;
-        [Tooltip("Angular damping per local axis (pitch, yaw, roll). Replaces ApplyTorqueDrag.")]
-        [SerializeField] Vector3 angularDamping = new Vector3(1.5f, 1.0f, 1.5f);
-
-        [Header("Roll / Yaw")]
-        [Tooltip("Roll torque (rad/s^2) at full input and full control authority.")]
-        [SerializeField] float rollStrength = 4f;
-        [Tooltip("Yaw torque (rad/s^2) at full input and full control authority.")]
-        [SerializeField] float yawStrength = 1.5f;
-        [Tooltip("Side force opposing sideslip. Stops the plane sliding sideways when yawing.")]
-        [SerializeField] float sideslipDrag = 0.5f;
-        [Tooltip("Weathervane torque that swings the nose back into the airflow.")]
-        [SerializeField] float sideslipStability = 1.0f;
-
-        private AircraftThrust aircraftThrust;
         private Rigidbody rb;
-        private AerodynamicParameters aerodynamicParameters;
-        private ControlParameters controlParameters;
-        private EngineParameters engineParameters;
 
-        // Inputs are stored and applied in FixedUpdate so behaviour is framerate independent.
-        private float pitchInput;
-        private float rollInput;
-        private float yawInput;
-        private float throttleInput;
+        
+        
+        [SerializeField] private AnimationCurve dragCurve;
+        
+        [SerializeField] private AnimationCurve pitchCurve;
+        [SerializeField] private AnimationCurve yawCurve;
+        [SerializeField] private AnimationCurve rollCurve;
 
-        private Vector3 lastVelocity;
-        private float currentG = 1f;
+        [SerializeField] private AnimationCurve inducedDragCurve;
 
-        // Debug / gizmo access
-        public Vector3 dragDirection;
-        public Vector3 liftDirection;
+        [SerializeField] private AnimationCurve AOAYawCurve;
 
-        // ---------- Helpers ----------
+        [SerializeField] private AnimationCurve AOACurve;
 
-        private Vector3 localVelocity => transform.InverseTransformDirection(rb.linearVelocity);
+        [SerializeField] private float liftPower;
 
-        // Dynamic pressure (density omitted; fold it into liftPower/dragPower)
-        private float q => 0.5f * rb.linearVelocity.sqrMagnitude;
+        [SerializeField] private float inducedDragPower;
 
-        // Angle of attack in degrees. Positive = nose above the flight path.
-        private float CalculateAOADegrees()
+        [SerializeField] private float dragStrength;
+        [SerializeField] private float rollStrengh;
+        [SerializeField] private float pitchStrengh;
+        [SerializeField] private float yawStrengh;
+
+        [SerializeField] private float maxThrust;
+
+        [SerializeField] private float throttleSpeed;
+
+        private float yawForce;
+
+        private float currentThrust;
+        private float throttle;
+
+        private Vector3 localVelocity;
+        private Vector3 localAngleVelocity;
+
+
+        private void UpdatePhysics()
         {
-            Vector3 lv = localVelocity;
-            return Mathf.Atan2(-lv.y, lv.z) * Mathf.Rad2Deg;
+            localVelocity = Quaternion.Inverse(rb.rotation) *(rb.linearVelocity);
+            localAngleVelocity = Quaternion.Inverse(transform.rotation) * rb.angularVelocity;
+            float angleOfAttack = Mathf.Atan2(-localVelocity.y, localVelocity.z) * Mathf.Rad2Deg;
+
+            float angleOfAttackYaw = Mathf.Atan2(localVelocity.x,localVelocity.z) * Mathf.Rad2Deg;
+
+          
+
+            CalculateLift(AOACurve.Evaluate( angleOfAttack), Vector3.right);
+
+           
+            ApplyThrust();
+
+
+            StallNoseDown();
+
+        
+   
         }
 
-        private float EvaluateAOACurve() => aerodynamicParameters.aoaCurve.Evaluate(CalculateAOADegrees());
 
-        // ---------- Public input API ----------
 
-        public void ApplyThrottle(float throttle) => throttleInput = throttle;
-        public void ApplyPitch(float input) => pitchInput = Mathf.Clamp(input, -1f, 1f);
-        public void ApplyRoll(float input) => rollInput = Mathf.Clamp(input, -1f, 1f);   // +1 = roll right
-        public void ApplyYaw(float input) => yawInput = Mathf.Clamp(input, -1f, 1f);     // +1 = yaw right
-
-        // ---------- G force ----------
-
-        // Proper acceleration (what the pilot feels) = actual acceleration - gravity.
-        // Level flight reads +1G on local Y. Call once per physics step.
-        private void UpdateGForce()
+        public void SetThrottle(float input)
         {
-            Vector3 accel = (rb.linearVelocity - lastVelocity) / Time.fixedDeltaTime;
-            lastVelocity = rb.linearVelocity;
+            throttle += input / 100;
+            throttle = Mathf.Clamp01(throttle);
 
-            Vector3 properAccel = accel - Physics.gravity;
-            currentG = transform.InverseTransformDirection(properAccel).y / 9.81f;
+
+
+
+            currentThrust = Mathf.Lerp(currentThrust, maxThrust * throttle, throttleSpeed * Time.deltaTime);
+            Debug.Log(currentThrust);
+
         }
 
-        // pitchInput > 0 = pull up. Fade out input as we approach the G limit.
-        private float ApplyGLimiter(float input, float g)
+        void StallNoseDown()
         {
-            if (input > 0f)
-            {
-                float maxG = Mathf.Abs(controlParameters.maxGlimit);
-                return input * Mathf.Clamp01((maxG - g) / gLimiterSoftRange);
-            }
-            if (input < 0f)
-            {
-                float minG = -Mathf.Abs(controlParameters.minGlimit);
-                return input * Mathf.Clamp01((g - minG) / gLimiterSoftRange);
-            }
-            return 0f;
+            Vector3 noseDown = Vector3.Project(localVelocity,Vector3.up);
+            Vector3 direction = (noseDown - transform.position).normalized;
+
+            Debug.DrawRay(transform.position,direction *20);
         }
 
-        // Controls fade out below stall speed, full authority above it.
-        private float ControlAuthority()
+        void CalculateLift(float aoa,Vector3 axis)
         {
-            float stall = Mathf.Max(1f, aerodynamicParameters.stallSpeed);
-            return Mathf.Clamp01(q / (0.5f * stall * stall));
+
+
+
+
+
+          
+            if (localVelocity.z < 0.1f) return; ;
+
+      
+                Vector3 liftVelocity = Vector3.ProjectOnPlane(localVelocity,axis);
+                float q = liftVelocity.sqrMagnitude;          
+                
+                float liftCoef = liftPower * q * AOACurve.Evaluate(aoa)  ;
+
+            
+                Vector3 liftDirection = Vector3.Cross(liftVelocity.normalized,axis);
+            Vector3 lift = liftDirection *  (0.5f * liftCoef);
+                Debug.DrawRay(transform.position, liftDirection);
+
+               float speedFactor = inducedDragCurve.Evaluate(Mathf.Clamp01(localVelocity.magnitude / 100f));
+            Vector3 inducedDrag = liftVelocity.sqrMagnitude * inducedDragPower * speedFactor * AOACurve.Evaluate(aoa) * -localVelocity.normalized;
+
+        
+            
+                rb.AddRelativeForce(lift + inducedDrag);
+         
+
+            Debug.Log(localVelocity.magnitude * 3.6);
+            
+
+
+
+
         }
 
-        // ---------- Forces ----------
-
-        private void ApplyAerodynamics()
+        
+        void ApplyThrust()
         {
-            Vector3 lv = localVelocity;
-            if (lv.z <= 0.1f) return; // flying backwards / stationary: no wing forces
-
-            Vector3 velDir = lv.normalized;
-            float aoaLift = EvaluateAOACurve();
-
-            // Lift is perpendicular to the airflow, in the plane of the wings' pitch axis (local X).
-            Vector3 velYZ = new Vector3(0f, lv.y, lv.z).normalized;
-            liftDirection = Vector3.Cross(velYZ, Vector3.right).normalized; // forward flow -> local up
-            dragDirection = -velDir;
-
-            float lift = q * aerodynamicParameters.liftPower * aoaLift;
-            Debug.Log(lift);
-            float parasiticDrag = 0.5f * q * aerodynamicParameters.dragPower;
-
-            // Induced drag: grows with how hard the wing is working (|AoA lift|), bleeds speed in hard turns.
-            float speed = rb.linearVelocity.magnitude;
-            float inducedDrag = aerodynamicParameters.inducedDragCurve.Evaluate(speed)
-                                * aerodynamicParameters.inducedDragPower
-                                * Mathf.Abs(aoaLift);
-
-            Vector3 force = -liftDirection * lift + dragDirection * (parasiticDrag + inducedDrag);
-
-            // Everything above is in local space -> AddRelativeForce.
-            // Acceleration mode == force * mass, so this matches the old "* mass * 0.001" behaviour.
-            rb.AddRelativeForce(force * aeroForceScale, ForceMode.Acceleration);
+            Vector3 thrust = Vector3.forward * currentThrust;
+       
+            Vector3 dragForce = -rb.linearVelocity.normalized * (0.5f * rb.linearVelocity.sqrMagnitude ) * dragStrength;
+            rb.AddRelativeForce(thrust);
+            rb.AddForce(dragForce);
+            
         }
-
-        private void ApplyThrust()
-        {
-            // ForceMode.Force because we're in FixedUpdate (Impulse here made thrust scale with step rate).
-            rb.AddRelativeForce(aircraftThrust.ApplyThrust(throttleInput, engineParameters), ForceMode.Impulse);
-        }
-
-        private void ApplyPitchTorque()
-        {
-            float limited = ApplyGLimiter(-pitchInput, currentG);
-            float strength = limited * controlParameters.pitchStrength * ControlAuthority();
-
-            // Unity is left-handed: +X rotation pitches the nose DOWN, so pull-up is -X.
-            // If your input is inverted, flip this sign.
-            rb.AddRelativeTorque(Vector3.right * strength, ForceMode.Acceleration);
-        }
-
-        private void ApplyRollTorque()
-        {
-            // Positive Z rotation in Unity rolls LEFT, so roll-right is -Z.
-            float strength = rollInput * rollStrength * ControlAuthority();
-            rb.AddRelativeTorque(Vector3.back * strength, ForceMode.Acceleration);
-        }
-
-        private void ApplyYawTorque()
-        {
-            // Positive Y rotation yaws RIGHT.
-            float strength = yawInput * yawStrength * ControlAuthority();
-            rb.AddRelativeTorque(Vector3.up * strength, ForceMode.Acceleration);
-        }
-
-        // Without this, yawing just points the nose while the plane keeps sliding the old way.
-        private void ApplySideslip()
-        {
-            Vector3 lv = localVelocity;
-            float speed = rb.linearVelocity.magnitude;
-            if (speed < 0.5f) return;
-
-            // Side force opposes lateral velocity so the flight path follows the nose.
-            rb.AddRelativeForce(Vector3.right * (-lv.x * sideslipDrag), ForceMode.Acceleration);
-
-            // Weathervane: airflow from the right (lv.x > 0) yaws the nose right to meet it.
-            float slip = lv.x / speed; // roughly sin(sideslip angle)
-            rb.AddRelativeTorque(Vector3.up * (slip * sideslipStability * ControlAuthority() * 10f), ForceMode.Acceleration);
-        }
-
-        // Below stall speed the nose falls toward the ground.
-        private void ApplyNoseStall()
-        {
-            float forwardSpeed = localVelocity.z;
-            float stall = aerodynamicParameters.stallSpeed;
-            if (forwardSpeed >= stall) return;
-
-            float factor = 1f - Mathf.Clamp01(forwardSpeed / Mathf.Max(1f, stall));
-            Vector3 axis = Vector3.Cross(transform.forward, Vector3.down); // rotates nose toward down
-            rb.AddTorque(axis * factor * noseDropStrength, ForceMode.Acceleration);
-        }
-
-        // Stops the plane spinning forever after input is released.
-        private void ApplyAngularDamping()
-        {
-            Vector3 localAngVel = transform.InverseTransformDirection(rb.angularVelocity);
-            Vector3 damp = -Vector3.Scale(localAngVel, angularDamping);
-            rb.AddRelativeTorque(damp, ForceMode.Acceleration);
-        }
-
-        // ---------- Unity ----------
-
+   
+    
         private void Start()
         {
             rb = GetComponent<Rigidbody>();
-            rb.mass = airSpecifications.aircraftMass;
-            controlParameters = airSpecifications.controlParameters;
-            aerodynamicParameters = airSpecifications.aerodynamicParameters;
-            engineParameters = airSpecifications.engineParameters;
-            aircraftThrust = GetComponent<AircraftThrust>();
-            lastVelocity = rb.linearVelocity;
         }
 
         private void FixedUpdate()
         {
-            UpdateGForce();
-            ApplyThrust();
-            ApplyAerodynamics();
-            ApplyPitchTorque();
-            ApplyRollTorque();
-            ApplyYawTorque();
-            ApplySideslip();
-            ApplyNoseStall();
-            ApplyAngularDamping();
+
+            UpdatePhysics();
+          
+           
         }
 
-        private void OnDrawGizmosSelected()
-        {
-            if (rb == null) return;
-            Gizmos.color = Color.green;
-            Gizmos.DrawRay(transform.position, transform.TransformDirection(liftDirection) * 3f);
-            Gizmos.color = Color.red;
-            Gizmos.DrawRay(transform.position, transform.TransformDirection(dragDirection) * 3f);
-        }
+
+     
+
+
+
+
+
+
+
     }
 }

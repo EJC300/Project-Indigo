@@ -1,5 +1,5 @@
 using Aircraft;
-using AircraftData;
+
 using UnityEngine;
 using UnityEngine.InputSystem;
 namespace Player
@@ -56,27 +56,27 @@ namespace Player
      
         void SetThrottle()
         {
-            float leverInput=  throttleAction.ReadValue<float>();
+            float throttleInput=  throttleAction.ReadValue<float>();
            
-            aircraftController.ApplyThrottle(leverInput);
+            aircraftController.SetThrottle(throttleInput);
         }
 
         void RollInput()
         {
             float roll = rollAction.ReadValue<float>();
-            aircraftController.ApplyRoll(roll);
+           // aircraftController.ApplyRoll(roll);
          
         }
         void PitchInput()
         {
-            float pitch = pitchAction.ReadValue<float>();
-            aircraftController.ApplyPitch(pitch);
+            float pitch = -pitchAction.ReadValue<float>();
+           // aircraftController.ApplyPitch(pitch);
         }
 
         void YawInput()
         {
             float yaw = yawAction.ReadValue<float>();
-            aircraftController.ApplyYaw(yaw);
+           // aircraftController.ApplyYaw(yaw);
 
         }
 

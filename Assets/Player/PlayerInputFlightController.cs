@@ -69,8 +69,8 @@ namespace Player
         }
         void PitchInput()
         {
-            float pitch = -pitchAction.ReadValue<float>();
-           // aircraftController.ApplyPitch(pitch);
+            float pitch = pitchAction.ReadValue<float>();
+            aircraftController.SetPitch(pitch);
         }
 
         void YawInput()

@@ -30,7 +30,9 @@ namespace Aircraft
 
         [SerializeField] private float inducedDragPower;
 
-        [SerializeField] private float dragStrength;
+        [SerializeField] private float dragForward;
+        [SerializeField] private float dragUp;
+        [SerializeField] private float dragLeft;
         [SerializeField] private float rollStrengh;
         [SerializeField] private float pitchStrengh;
         [SerializeField] private float yawStrengh;
@@ -38,35 +40,34 @@ namespace Aircraft
         [SerializeField] private float maxThrust;
 
         [SerializeField] private float throttleSpeed;
-
+        private float pitchInput;
         private float yawForce;
-
+        private float pitchForce;
         private float currentThrust;
         private float throttle;
 
         private Vector3 localVelocity;
         private Vector3 localAngleVelocity;
-
-
+        private Vector3 liftVelocity;
+        float pressure;
+        float angleOfAttack;
         private void UpdatePhysics()
         {
-            localVelocity = transform.InverseTransformDirection(rb.linearVelocity);
+                    localVelocity = transform.InverseTransformDirection(rb.linearVelocity);
             localAngleVelocity = Quaternion.Inverse(transform.rotation) * rb.angularVelocity;
-            float angleOfAttack = ( Mathf.Atan2(-localVelocity.y, localVelocity.z) + aoaBias)* Mathf.Rad2Deg;
+            angleOfAttack = AOACurve.Evaluate(Mathf.Atan2(-localVelocity.y, localVelocity.z) + aoaBias * Mathf.Rad2Deg);
 
-            float angleOfAttackYaw = Mathf.Atan2(localVelocity.x,localVelocity.z) * Mathf.Rad2Deg;
-
-          Debug.Log(angleOfAttack + " " + angleOfAttackYaw);
-
-            CalculateLift(AOACurve.Evaluate(angleOfAttack), Vector3.right);
+            float angleOfAttackYaw = Mathf.Atan2(localVelocity.x, localVelocity.z) * Mathf.Rad2Deg;
+            pressure = localVelocity.sqrMagnitude;
 
            
             ApplyThrust();
+            ApplySteer();
+            CalculateLift((angleOfAttack), pressure, Vector3.up);
 
 
-         
-                   
-   
+
+
         }
 
 
@@ -85,8 +86,34 @@ namespace Aircraft
         }
 
 
+        void ApplySteer()
+        {
+            Vector3 prevAngular = Vector3.zero;
+            float pitchVelocity = CalculateSteer(pitchInput *pitchStrengh, localAngleVelocity.x, pressure, angleOfAttack);
+            Vector3 damp = -localAngleVelocity.normalized * localAngleVelocity.sqrMagnitude * 5000;
+            rb.AddRelativeTorque(pitchVelocity * Vector3.right, ForceMode.Acceleration);
+            rb.AddTorque(damp);
+            prevAngular = localAngleVelocity;
+        }
+        
+        public void SetPitch(float input)
+        {
+            pitchInput = input;
+           
+        }
 
-        void CalculateLift(float aoa, Vector3 axis)
+        float CalculateSteer(float targetVelocity,float currentVelocity,float q,float aoa)
+        {
+            float controlAuthority = Mathf.InverseLerp(0,98 , Mathf.Max(0, localVelocity.z));
+            controlAuthority = Mathf.Clamp01(controlAuthority);
+           
+            float error = (targetVelocity * controlAuthority) - currentVelocity;
+
+
+            return  Mathf.Clamp( error,Time.fixedDeltaTime * -5, Time.fixedDeltaTime * 5);
+            
+        }
+        void CalculateLift(float aoa,float q, Vector3 axis)
         {
 
 
@@ -96,27 +123,29 @@ namespace Aircraft
 
 
 
-            Vector3 liftVelocity = Vector3.ProjectOnPlane(localVelocity, axis);
-            float q = liftVelocity.sqrMagnitude;
+            liftVelocity = localVelocity.z * axis;
+             
 
-            float liftCoef = liftPower * q * aoa;
-            Debug.Log(aoa);
-           
-                Vector3 liftDirection = Vector3.Cross(liftVelocity.normalized, axis);
-                Vector3 lift = liftDirection * ( liftCoef);
-                Debug.DrawRay(transform.position, liftDirection);
+                float liftCoef =localVelocity.z * liftPower * aoa;
+
+
+            Vector3 liftDirection = liftVelocity. normalized;
+                Vector3 lift = liftDirection * ( liftCoef) * localVelocity.sqrMagnitude;
+                Debug.Log(liftDirection);
 
                 float speedFactor = inducedDragCurve.Evaluate(Mathf.Clamp01(localVelocity.z / 100f));
                 Vector3 inducedDrag = liftVelocity.sqrMagnitude * inducedDragPower * speedFactor * aoa * -localVelocity.normalized;
 
+            Vector3 totalLift = Vector3.zero;
 
-                Debug.Log(lift);
-
-
-                rb.AddRelativeForce(lift + inducedDrag);
+            totalLift = transform.TransformDirection(lift + inducedDrag);
 
 
-                //Debug.Log(localVelocity.magnitude * 3.6);
+
+                rb.AddForce(totalLift);
+
+
+        
 
 
 
@@ -129,10 +158,16 @@ namespace Aircraft
         void ApplyThrust()
         {
             Vector3 thrust = Vector3.forward * currentThrust;
-       
-            Vector3 dragForce = -rb.linearVelocity.normalized * (0.5f * rb.linearVelocity.sqrMagnitude ) * dragStrength;
+            Vector3 drag = Vector3.zero;
+
+            drag.x =  -localVelocity.x * dragLeft;
+            drag.y = -localVelocity.y * dragUp;
+            drag.z = -localVelocity.z  * dragForward;
+            Debug.Log(drag);
+           
+
             rb.AddRelativeForce(thrust);
-            rb.AddForce(dragForce);
+            rb.AddRelativeForce(( (drag* localVelocity.sqrMagnitude)));
             
         }
    
@@ -146,6 +181,7 @@ namespace Aircraft
         {
 
             UpdatePhysics();
+            Debug.Log(localVelocity.z * 3.6);
           
            
         }

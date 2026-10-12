@@ -2055,7 +2055,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3261300975531813186, guid: 81b525d5008e00547a774eca933849cf, type: 3}
       propertyPath: maxThrust
-      value: 130000
+      value: 160000
       objectReference: {fileID: 0}
     - target: {fileID: 3261300975531813186, guid: 81b525d5008e00547a774eca933849cf, type: 3}
       propertyPath: dragForward
@@ -2067,7 +2067,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3261300975531813186, guid: 81b525d5008e00547a774eca933849cf, type: 3}
       propertyPath: pitchStrengh
-      value: 3
+      value: 18000
       objectReference: {fileID: 0}
     - target: {fileID: 3261300975531813186, guid: 81b525d5008e00547a774eca933849cf, type: 3}
       propertyPath: inducedDragPower
@@ -2076,6 +2076,10 @@ PrefabInstance:
     - target: {fileID: 4261108845285579489, guid: 81b525d5008e00547a774eca933849cf, type: 3}
       propertyPath: m_Mass
       value: 18000
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261108845285579489, guid: 81b525d5008e00547a774eca933849cf, type: 3}
+      propertyPath: m_Interpolate
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5106210679899737556, guid: 81b525d5008e00547a774eca933849cf, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2112,7 +2116,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7182409925040656032, guid: 81b525d5008e00547a774eca933849cf, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2007150579}
   m_SourcePrefab: {fileID: 100100000, guid: 81b525d5008e00547a774eca933849cf, type: 3}
 --- !u!1 &1790466933
 GameObject:
@@ -2440,12 +2447,41 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3261300975531813186, guid: 81b525d5008e00547a774eca933849cf, type: 3}
   m_PrefabInstance: {fileID: 1727703575}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 2007150576}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6aeb28f4ffbece74488a373f377b1fba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AircraftData.Aerobody
+--- !u!1 &2007150576 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7182409925040656032, guid: 81b525d5008e00547a774eca933849cf, type: 3}
+  m_PrefabInstance: {fileID: 1727703575}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2007150579
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2007150576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ba5c81b5f9ebc842923a94392fe0b3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Aircraft.AeroBody
+  wingArea: 400
+  wingAreaYaw: 50
+  liftCoefficient: 0.661
+  liftCoefficientYaw: 0.266
+  rho: 0.569
+  maxAngleAttack: 15
+  maxAngleAttackYaw: 15
+  aspectRatio: 0.077
+  efficiencyFactor: 0.328
+  dragUpCoefficient: 0.224
+  dragForwardCoefficient: 0.05
+  dragLeftCoefficient: 0.979
 --- !u!1 &2121913383
 GameObject:
   m_ObjectHideFlags: 0

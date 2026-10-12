@@ -10,6 +10,7 @@ namespace Aircraft
     public class PlaneController : MonoBehaviour
     {
 
+        private AeroBody body;
         private Rigidbody rb;
 
         [SerializeField] private float aoaBias = 0.5f;
@@ -61,9 +62,8 @@ namespace Aircraft
             pressure = localVelocity.sqrMagnitude;
 
 
-            ApplyThrust();
             ApplySteer();
-            CalculateLift((angleOfAttack), pressure, Vector3.up);
+           
 
 
 
@@ -89,7 +89,7 @@ namespace Aircraft
         void ApplySteer()
         {
             Vector3 prevAngular = Vector3.zero;
-            float pitchVelocity = CalculateSteer(pitchInput * pitchStrengh, localAngleVelocity.x, pressure, angleOfAttack);
+            float pitchVelocity = CalculateSteer(pitchInput * pitchStrengh, localAngleVelocity.x, body.GetPressure, angleOfAttack);
             Vector3 damp = -localAngleVelocity.normalized * localAngleVelocity.sqrMagnitude * 5000;
             rb.AddRelativeTorque(pitchVelocity * Vector3.right, ForceMode.Acceleration);
             rb.AddTorque(damp);
@@ -163,11 +163,11 @@ namespace Aircraft
             drag.x = -localVelocity.x * dragLeft;
             drag.y = -localVelocity.y * dragUp;
             drag.z = -localVelocity.z * dragForward;
-            Debug.Log(drag);
+         
 
 
             rb.AddRelativeForce(thrust);
-            rb.AddRelativeForce(((drag * localVelocity.sqrMagnitude)));
+            
 
         }
 
@@ -175,13 +175,15 @@ namespace Aircraft
         private void Start()
         {
             rb = GetComponent<Rigidbody>();
+            body = GetComponent<AeroBody>();
         }
 
         private void FixedUpdate()
         {
 
             UpdatePhysics();
-            Debug.Log(localVelocity.z * 3.6);
+            ApplyThrust();
+          
 
 
         }

@@ -2062,6 +2062,10 @@ PrefabInstance:
       value: 0.02
       objectReference: {fileID: 0}
     - target: {fileID: 3261300975531813186, guid: 81b525d5008e00547a774eca933849cf, type: 3}
+      propertyPath: yawStrength
+      value: 3900
+      objectReference: {fileID: 0}
+    - target: {fileID: 3261300975531813186, guid: 81b525d5008e00547a774eca933849cf, type: 3}
       propertyPath: dragStrength
       value: 40
       objectReference: {fileID: 0}
@@ -2070,8 +2074,12 @@ PrefabInstance:
       value: 18000
       objectReference: {fileID: 0}
     - target: {fileID: 3261300975531813186, guid: 81b525d5008e00547a774eca933849cf, type: 3}
+      propertyPath: rollStrength
+      value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 3261300975531813186, guid: 81b525d5008e00547a774eca933849cf, type: 3}
       propertyPath: pitchStrength
-      value: 500
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3261300975531813186, guid: 81b525d5008e00547a774eca933849cf, type: 3}
       propertyPath: inducedDragPower
@@ -2079,7 +2087,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3261300975531813186, guid: 81b525d5008e00547a774eca933849cf, type: 3}
       propertyPath: turnAcceleration
-      value: 24
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 4261108845285579489, guid: 81b525d5008e00547a774eca933849cf, type: 3}
       propertyPath: m_Mass
@@ -2091,31 +2099,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5106210679899737556, guid: 81b525d5008e00547a774eca933849cf, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.9
+      value: 4.05
       objectReference: {fileID: 0}
     - target: {fileID: 5106210679899737556, guid: 81b525d5008e00547a774eca933849cf, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -8.6
+      value: -7.5
       objectReference: {fileID: 0}
     - target: {fileID: 5106210679899737556, guid: 81b525d5008e00547a774eca933849cf, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.99999994
+      value: 0.98595047
       objectReference: {fileID: 0}
     - target: {fileID: 5106210679899737556, guid: 81b525d5008e00547a774eca933849cf, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.00033628824
+      value: 0.1670382
       objectReference: {fileID: 0}
     - target: {fileID: 5106210679899737556, guid: 81b525d5008e00547a774eca933849cf, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.000000015889283
+      value: 0.000000008671714
       objectReference: {fileID: 0}
     - target: {fileID: 5106210679899737556, guid: 81b525d5008e00547a774eca933849cf, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.000000041784357
+      value: -0.00000004385434
       objectReference: {fileID: 0}
     - target: {fileID: 5106210679899737556, guid: 81b525d5008e00547a774eca933849cf, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: -0.039
+      value: 19.231
       objectReference: {fileID: 0}
     - target: {fileID: 7182409925040656032, guid: 81b525d5008e00547a774eca933849cf, type: 3}
       propertyPath: m_Name
@@ -2480,15 +2488,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Aircraft.AeroBody
   wingArea: 400
   wingAreaYaw: 50
-  liftCoefficient: 0.661
+  liftCoefficient: 0.354
   liftCoefficientYaw: 0.266
-  rho: 0.569
+  rho: 1
   maxAngleAttack: 15
   maxAngleAttackYaw: 15
   aspectRatio: 0.077
-  efficiencyFactor: 0.328
-  dragUpCoefficient: 0.224
-  dragForwardCoefficient: 0.05
+  efficiencyFactor: 0.807
+  dragUpCoefficient: 0.81
+  dragForwardCoefficient: 0.19
   dragLeftCoefficient: 0.979
 --- !u!1 &2121913383
 GameObject:

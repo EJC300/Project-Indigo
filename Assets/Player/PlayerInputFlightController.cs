@@ -63,8 +63,8 @@ namespace Player
 
         void RollInput()
         {
-            float roll = rollAction.ReadValue<float>();
-           // aircraftController.ApplyRoll(roll);
+            float roll = -rollAction.ReadValue<float>();
+            aircraftController.SetRoll(roll);
          
         }
         void PitchInput()

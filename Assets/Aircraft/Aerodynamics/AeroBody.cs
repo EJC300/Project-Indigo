@@ -24,23 +24,26 @@ namespace Aircraft
         //Lift 
         [SerializeField] private float wingArea;
         [SerializeField] private float wingAreaYaw;
-        [Range(0.0f,1.0f)]
-        [SerializeField] private float liftCoefficient ;
+        [Range(0.0f, 1.0f)]
+        [SerializeField] private float liftCoefficient;
         [Range(0.0f, 1.0f)]
         [SerializeField] private float liftCoefficientYaw;
-        [Range(0.0f,1.0f)]
+        [Range(0.0f, 1.0f)]
         [SerializeField] private float rho;
-         private float coefficientOfLift;
-         private float coefficientOfLiftYaw;
-         private float angleOfAttack;
-         private float angleOfAttackYaw;
+        private float coefficientOfLift;
+        private float coefficientOfLiftYaw;
+        private float angleOfAttack;
+        private float angleOfAttackYaw;
+        private float maxStallSpeed;
+        private float minStallSpeed;
+        private float loadFactor;
         [Range(0.0f, 360.0f)]
         [SerializeField]
         private float maxAngleAttack;
         [Range(0.0f, 360.0f)]
         [SerializeField]
         private float maxAngleAttackYaw;
-         private float pressure;
+        private float pressure;
         //Drag
         [Range(0.0f, 1.0f)]
         [SerializeField] private float aspectRatio;
@@ -48,9 +51,9 @@ namespace Aircraft
         [Range(0.0f, 1.0f)]
         [SerializeField] private float efficiencyFactor;
         [Range(0.0f, 1.0f)]
-        [SerializeField] private float dragUpCoefficient,dragForwardCoefficient,dragLeftCoefficient;
+        [SerializeField] private float dragUpCoefficient, dragForwardCoefficient, dragLeftCoefficient;
 
-       
+
 
         private void UpdateState()
         {
@@ -58,6 +61,7 @@ namespace Aircraft
             localAngularVelocity = transform.InverseTransformVector(rb.angularVelocity) * Mathf.Deg2Rad;
             CalculateLift();
             CalculateDrag();
+            CalculateStall();
         }
         private void CalculateDrag()
         {
@@ -77,33 +81,43 @@ namespace Aircraft
             angleOfAttack = Mathf.Atan2(-localVelocity.y, localVelocity.z) * Mathf.Rad2Deg;
 
             angleOfAttackYaw = Mathf.Atan2(localVelocity.x, localVelocity.z) * Mathf.Rad2Deg;
-       
+
             coefficientOfLift = MathUtilities.UnclampedInverseLerp(-maxAngleAttack, maxAngleAttack, angleOfAttack) * liftCoefficient;
             coefficientOfLiftYaw = MathUtilities.UnclampedInverseLerp(-maxAngleAttack, maxAngleAttack, angleOfAttackYaw) * liftCoefficientYaw;
-          
+
             Vector3 relativeWind = localVelocity.z * Vector3.up;
-            Vector3 relativeWindYaw = localVelocity.z * Vector3. right;
+            Vector3 relativeWindYaw = localVelocity.z * Vector3.right;
 
             pressure = rho * rb.linearVelocity.sqrMagnitude;
 
-             
+
 
             Vector3 liftForce = relativeWind.normalized * pressure * 0.5f * (coefficientOfLift * coefficientOfLift) * wingArea;
-          
+
             Vector3 liftForceYaw = relativeWindYaw.normalized * pressure * (0.5f * (coefficientOfLift * coefficientOfLift)) * wingArea;
 
             Vector3 liftTotalForce = (liftForce);
-      
+
             float inducedDragCoefficient = (coefficientOfLift * coefficientOfLift) / Mathf.PI * aspectRatio * efficiencyFactor;
             Vector3 inducedDragForce = -(localVelocity.z * transform.forward).normalized * inducedDragCoefficient;
             Vector3 inducedDragForceYaw = -(localVelocity.z * transform.right).normalized * inducedDragCoefficient;
-            Vector3 totalForce =transform.TransformDirection (liftTotalForce + inducedDragForce + inducedDragForceYaw) ;
-            Debug.Log(totalForce);
-            rb.AddForce(totalForce,ForceMode.Force);
+            Vector3 totalForce = (liftTotalForce + inducedDragForce + inducedDragForceYaw);
+       
+            rb.AddForce(totalForce, ForceMode.Force);
 
 
         }
+        void CalculateStall()
+        {
+            float coef = (rho * wingArea) * coefficientOfLift;
+         
+            if (Mathf.Abs(coef) > 0.5)
+            {
+                maxStallSpeed = Mathf.Sqrt((2 * rb.mass) / coef);
 
+                minStallSpeed = (2 * rb.mass) / coef;
+            }
+        }
 
         //Return angle of attack and pressure
         private void Start()
@@ -113,7 +127,8 @@ namespace Aircraft
         private void FixedUpdate()
         {
             UpdateState();
-           
+
+
         }
 
 
@@ -125,16 +140,33 @@ namespace Aircraft
         {
             return angleOfAttackYaw;
         }
-        
 
-       public float GetPressure
+
+        public float GetPressure
         {
             get { return pressure; }
         }
+        public float GetWingSurfaceArea()
+        {
+            return wingArea;
+        }
+        public Vector3 GetLinearVelocity()
+        {
+            return localVelocity;
+        }
 
-
-
-
-
+        public Vector3 GetAngularVelocity()
+        {
+            return localAngularVelocity;
+        }
+        public float GetMinStallSpeed()
+        {
+            return Mathf.Max(1, minStallSpeed);
+        }
+        public float GetMaxStallSpeed()
+        {
+           
+            return Mathf.Max(1, maxStallSpeed);
+        }
     }
 }

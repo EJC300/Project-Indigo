@@ -2070,8 +2070,16 @@ PrefabInstance:
       value: 18000
       objectReference: {fileID: 0}
     - target: {fileID: 3261300975531813186, guid: 81b525d5008e00547a774eca933849cf, type: 3}
+      propertyPath: pitchStrength
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 3261300975531813186, guid: 81b525d5008e00547a774eca933849cf, type: 3}
       propertyPath: inducedDragPower
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3261300975531813186, guid: 81b525d5008e00547a774eca933849cf, type: 3}
+      propertyPath: turnAcceleration
+      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 4261108845285579489, guid: 81b525d5008e00547a774eca933849cf, type: 3}
       propertyPath: m_Mass

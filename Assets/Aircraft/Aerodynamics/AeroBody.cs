@@ -102,7 +102,7 @@ namespace Aircraft
             Vector3 inducedDragForce = -(localVelocity.z * transform.forward).normalized * inducedDragCoefficient;
             Vector3 inducedDragForceYaw = -(localVelocity.z * transform.right).normalized * inducedDragCoefficient;
             Vector3 totalForce = (liftTotalForce + inducedDragForce + inducedDragForceYaw);
-       
+            totalForce = transform.TransformDirection(totalForce);
             rb.AddForce(totalForce, ForceMode.Force);
 
 

@@ -27,13 +27,14 @@ namespace Aircraft
         [SerializeField] private float minDeflectionAngelYae;
         [SerializeField] private float maxDeflectionAngleRoll;
         [SerializeField] private float minDeflectionAngleRoll;
-
+        [SerializeField] private float speedBrakeDragCoef = 0.5f;
         [SerializeField] private float maxThrust;
 
         [SerializeField] private float throttleSpeed;
         private float pitchInputAngle;
         private float rollInputAngle;
         float pitchTarget = 0;
+        private bool speedBrakes;
         private float acceleration;
         private float currentG;
         private float previousG;
@@ -44,21 +45,24 @@ namespace Aircraft
         private float deflectionAnglePitch;
         private float deflectionAngleYaw;
         private float deflectionAngleRoll;
+        
 
 
 
         private Vector3 CalculateGForce()
         {
-            return Vector3.Cross(body.GetAngularVelocity(),Physics.gravity);
+           Vector3 globalVelocity = transform.TransformDirection(body.GetLinearVelocity());
+            Vector3 globalAngularVelocity = transform.TransformDirection(body.GetAngularVelocity());
+            return Vector3.Cross(globalAngularVelocity,globalVelocity) * 9.8f;
         }
         private float GLimit(float input)
         {
-            float gForce = CalculateGForce().magnitude * 100;
-            Debug.Log(CalculateGForce());
-            currentG = gForce;
+            float gForce = CalculateGForce().magnitude;
+           
+            currentG =  input*  gForce;
             acceleration = previousG - currentG/Time.fixedDeltaTime;
-            float newInput = Utilities.MathUtilities.UnclampedInverseLerp(minG/9.8f, maxG/9.8f, acceleration);
-            
+            float newInput = Utilities.MathUtilities.UnclampedInverseLerp(-minG, maxG, currentG);
+         
             if(currentG > maxG )
             {
                 return newInput;
@@ -88,7 +92,15 @@ namespace Aircraft
 
             aileronRight.RotateToTargetAngle(Vector3.right, -rollInputAngle);
         }
-
+        private void SpeedBrakes()
+        {
+            if (speedBrakes)
+            {
+                Vector3 force = speedBrakeDragCoef * body.GetPressure * body.GetLinearVelocity().normalized;
+                Vector3 forceDirection = transform.forward * force.z;
+                rb.AddForce(-forceDirection);
+            }
+        }
         private void PitchYawRoll()
         {
             float speed = Mathf.InverseLerp( maxManeuveringSpeed, minManeuveringSpeed, body.GetLinearVelocity().z);
@@ -132,17 +144,17 @@ namespace Aircraft
         {
             float glimit = GLimit(input);
             Debug.Log(glimit);
-           
+        
             if (Mathf.Abs(input) <= 0)
             {
                 pitchTarget = 0;
             }
             else
             {
-                pitchTarget +=  glimit * 45 * Time.fixedDeltaTime;
+                pitchTarget +=  45 * Time.fixedDeltaTime;
             }
 
-                pitchInputAngle = Mathf.MoveTowards(pitchInputAngle, pitchTarget, Time.fixedDeltaTime * 15);
+                pitchInputAngle = Mathf.MoveTowards(pitchInputAngle, pitchTarget * glimit, Time.fixedDeltaTime  * 15) ;
                 
         }
         public void SetRoll(float input)
@@ -158,7 +170,10 @@ namespace Aircraft
             }
         }
 
-
+        public void SetSpreadBrakes()
+        {
+            speedBrakes = throttle <= 0;
+        }
         void ApplyThrust()
         {
             Vector3 thrust = Vector3.forward * currentThrust;
@@ -178,12 +193,17 @@ namespace Aircraft
             body = GetComponent<AeroBody>();
         }
 
+        private void Update()
+        {
+            SetSpreadBrakes();
+        }
         private void FixedUpdate()
         {
 
           
             ApplyThrust();
             PitchYawRoll();
+            SpeedBrakes();
             AnimateControlSurfaces();
 
 

@@ -2089,6 +2089,14 @@ PrefabInstance:
       propertyPath: turnAcceleration
       value: 0.8
       objectReference: {fileID: 0}
+    - target: {fileID: 3261300975531813186, guid: 81b525d5008e00547a774eca933849cf, type: 3}
+      propertyPath: minDeflectionAngePitch
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3261300975531813186, guid: 81b525d5008e00547a774eca933849cf, type: 3}
+      propertyPath: maxDeflectionAnglePitch
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 4261108845285579489, guid: 81b525d5008e00547a774eca933849cf, type: 3}
       propertyPath: m_Mass
       value: 18000
@@ -2096,6 +2104,10 @@ PrefabInstance:
     - target: {fileID: 4261108845285579489, guid: 81b525d5008e00547a774eca933849cf, type: 3}
       propertyPath: m_Interpolate
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261108845285579489, guid: 81b525d5008e00547a774eca933849cf, type: 3}
+      propertyPath: m_AngularDamping
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5106210679899737556, guid: 81b525d5008e00547a774eca933849cf, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2488,15 +2500,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Aircraft.AeroBody
   wingArea: 400
   wingAreaYaw: 50
-  liftCoefficient: 0.354
-  liftCoefficientYaw: 0.266
+  liftCoefficient: 0.247
+  liftCoefficientYaw: 0.393
   rho: 1
   maxAngleAttack: 15
   maxAngleAttackYaw: 15
   aspectRatio: 0.077
-  efficiencyFactor: 0.807
-  dragUpCoefficient: 0.81
-  dragForwardCoefficient: 0.19
+  efficiencyFactor: 0.312
+  dragUpCoefficient: 0.745
+  dragForwardCoefficient: 0.013
   dragLeftCoefficient: 0.979
 --- !u!1 &2121913383
 GameObject:

@@ -1026,6 +1026,15 @@
                     "initialStateCheck": true
                 },
                 {
+                    "name": "Look",
+                    "type": "Value",
+                    "id": "84abdea1-c373-44ac-80cd-80bff0fcc827",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
                     "name": "Roll",
                     "type": "Button",
                     "id": "a1955441-42dc-41ff-820e-0471a633c909",
@@ -1047,6 +1056,15 @@
                     "name": "Throttle",
                     "type": "Button",
                     "id": "ea1988c6-0d23-44de-9b84-d990452fa42a",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Reset View",
+                    "type": "Button",
+                    "id": "ff007c33-8a37-48c2-994c-1536ea2b8475",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -1086,6 +1104,17 @@
                     "action": "Pitch",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "76bebccc-3c14-4e7a-8a0b-6c9e3f754395",
+                    "path": "<Gamepad>/rightStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "Look",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 },
                 {
                     "name": "1D Axis",
@@ -1185,6 +1214,17 @@
                     "action": "Throttle",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "e4be49ec-2154-4806-8ede-ba982d2d86d3",
+                    "path": "<Gamepad>/rightStickPress",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Reset View",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }

@@ -1112,6 +1112,15 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
+                    ""name"": ""Look"",
+                    ""type"": ""Value"",
+                    ""id"": ""84abdea1-c373-44ac-80cd-80bff0fcc827"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
                     ""name"": ""Roll"",
                     ""type"": ""Button"",
                     ""id"": ""a1955441-42dc-41ff-820e-0471a633c909"",
@@ -1133,6 +1142,15 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""name"": ""Throttle"",
                     ""type"": ""Button"",
                     ""id"": ""ea1988c6-0d23-44de-9b84-d990452fa42a"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Reset View"",
+                    ""type"": ""Button"",
+                    ""id"": ""ff007c33-8a37-48c2-994c-1536ea2b8475"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -1172,6 +1190,17 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""action"": ""Pitch"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""76bebccc-3c14-4e7a-8a0b-6c9e3f754395"",
+                    ""path"": ""<Gamepad>/rightStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""Look"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 },
                 {
                     ""name"": ""1D Axis"",
@@ -1271,6 +1300,17 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""action"": ""Throttle"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e4be49ec-2154-4806-8ede-ba982d2d86d3"",
+                    ""path"": ""<Gamepad>/rightStickPress"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Reset View"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -1365,9 +1405,11 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         // FlightControls
         m_FlightControls = asset.FindActionMap("FlightControls", throwIfNotFound: true);
         m_FlightControls_Pitch = m_FlightControls.FindAction("Pitch", throwIfNotFound: true);
+        m_FlightControls_Look = m_FlightControls.FindAction("Look", throwIfNotFound: true);
         m_FlightControls_Roll = m_FlightControls.FindAction("Roll", throwIfNotFound: true);
         m_FlightControls_Yaw = m_FlightControls.FindAction("Yaw", throwIfNotFound: true);
         m_FlightControls_Throttle = m_FlightControls.FindAction("Throttle", throwIfNotFound: true);
+        m_FlightControls_ResetView = m_FlightControls.FindAction("Reset View", throwIfNotFound: true);
     }
 
     ~@InputSystem_Actions()
@@ -1841,9 +1883,11 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_FlightControls;
     private List<IFlightControlsActions> m_FlightControlsActionsCallbackInterfaces = new List<IFlightControlsActions>();
     private readonly InputAction m_FlightControls_Pitch;
+    private readonly InputAction m_FlightControls_Look;
     private readonly InputAction m_FlightControls_Roll;
     private readonly InputAction m_FlightControls_Yaw;
     private readonly InputAction m_FlightControls_Throttle;
+    private readonly InputAction m_FlightControls_ResetView;
     /// <summary>
     /// Provides access to input actions defined in input action map "FlightControls".
     /// </summary>
@@ -1860,6 +1904,10 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @Pitch => m_Wrapper.m_FlightControls_Pitch;
         /// <summary>
+        /// Provides access to the underlying input action "FlightControls/Look".
+        /// </summary>
+        public InputAction @Look => m_Wrapper.m_FlightControls_Look;
+        /// <summary>
         /// Provides access to the underlying input action "FlightControls/Roll".
         /// </summary>
         public InputAction @Roll => m_Wrapper.m_FlightControls_Roll;
@@ -1871,6 +1919,10 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "FlightControls/Throttle".
         /// </summary>
         public InputAction @Throttle => m_Wrapper.m_FlightControls_Throttle;
+        /// <summary>
+        /// Provides access to the underlying input action "FlightControls/ResetView".
+        /// </summary>
+        public InputAction @ResetView => m_Wrapper.m_FlightControls_ResetView;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1900,6 +1952,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @Pitch.started += instance.OnPitch;
             @Pitch.performed += instance.OnPitch;
             @Pitch.canceled += instance.OnPitch;
+            @Look.started += instance.OnLook;
+            @Look.performed += instance.OnLook;
+            @Look.canceled += instance.OnLook;
             @Roll.started += instance.OnRoll;
             @Roll.performed += instance.OnRoll;
             @Roll.canceled += instance.OnRoll;
@@ -1909,6 +1964,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @Throttle.started += instance.OnThrottle;
             @Throttle.performed += instance.OnThrottle;
             @Throttle.canceled += instance.OnThrottle;
+            @ResetView.started += instance.OnResetView;
+            @ResetView.performed += instance.OnResetView;
+            @ResetView.canceled += instance.OnResetView;
         }
 
         /// <summary>
@@ -1923,6 +1981,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @Pitch.started -= instance.OnPitch;
             @Pitch.performed -= instance.OnPitch;
             @Pitch.canceled -= instance.OnPitch;
+            @Look.started -= instance.OnLook;
+            @Look.performed -= instance.OnLook;
+            @Look.canceled -= instance.OnLook;
             @Roll.started -= instance.OnRoll;
             @Roll.performed -= instance.OnRoll;
             @Roll.canceled -= instance.OnRoll;
@@ -1932,6 +1993,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @Throttle.started -= instance.OnThrottle;
             @Throttle.performed -= instance.OnThrottle;
             @Throttle.canceled -= instance.OnThrottle;
+            @ResetView.started -= instance.OnResetView;
+            @ResetView.performed -= instance.OnResetView;
+            @ResetView.canceled -= instance.OnResetView;
         }
 
         /// <summary>
@@ -2201,6 +2265,13 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnPitch(InputAction.CallbackContext context);
         /// <summary>
+        /// Method invoked when associated input action "Look" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnLook(InputAction.CallbackContext context);
+        /// <summary>
         /// Method invoked when associated input action "Roll" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
@@ -2221,5 +2292,12 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnThrottle(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Reset View" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnResetView(InputAction.CallbackContext context);
     }
 }

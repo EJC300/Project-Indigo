@@ -11,13 +11,15 @@ namespace Player
         private InputActionMap inputActions;
 
         [SerializeField] private PlaneController aircraftController;
-      
 
+        [SerializeField] private ThirdPersonCamera thirdPersonCamera;
 
+        [SerializeField] string lookName;
         [SerializeField] string pitchName;
         [SerializeField] string yawName;
         [SerializeField] string rollName;
         [SerializeField] string throttleName;
+        [SerializeField] InputAction lookAction;
         private InputAction pitchAction;
         private InputAction rollAction;
         private InputAction yawAction;
@@ -25,6 +27,7 @@ namespace Player
         private void Awake()
         {
             InputActionMap inputActions = inputAsset.FindActionMap("FlightControls");
+            lookAction = inputActions.FindAction(lookName);
             pitchAction = inputActions.FindAction(pitchName);
             yawAction = inputActions.FindAction(yawName);
             rollAction = inputActions.FindAction(rollName);
@@ -42,18 +45,30 @@ namespace Player
            
             
         }
-
+        private void Update()
+        {
+            SetLookAxis();
+        }
         private void FixedUpdate()
         {
         
-            
+                
                 SetThrottle();
                 RollInput();
                 PitchInput();
                 YawInput();
             
         }
-     
+        
+        void SetLookAxis()
+        {
+          Vector3 lookAxis = lookAction.ReadValue<Vector2>();
+       
+
+           Vector3 axis = new Vector3(lookAxis.y, lookAxis.x, 0);
+           
+           thirdPersonCamera.LookCamera(axis);
+        }
         void SetThrottle()
         {
             float throttleInput=  throttleAction.ReadValue<float>();

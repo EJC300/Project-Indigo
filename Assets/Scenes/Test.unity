@@ -1061,10 +1061,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Player.PlayerInputFlightController
   inputAsset: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   aircraftController: {fileID: 3261300975105721173}
+  thirdPersonCamera: {fileID: 7182409924477150392}
+  lookName: Look
   pitchName: Pitch
   yawName: Yaw
   rollName: Roll
   throttleName: Throttle
+  lookAction:
+    m_Name: Look
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: dec9e812-258f-47a9-a6cf-ab9dca0ebf08
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
 --- !u!1 &1114955340
 GameObject:
   m_ObjectHideFlags: 0
@@ -2326,18 +2337,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ba5c81b5f9ebc842923a94392fe0b3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Aircraft.AeroBody
-  wingArea: 400
+  wingArea: 800
   wingAreaYaw: 50
-  liftCoefficient: 0.247
-  liftCoefficientYaw: 0.393
+  liftCoefficient: 0.342
+  liftCoefficientYaw: 0.468
   rho: 1
   maxAngleAttack: 15
   maxAngleAttackYaw: 15
-  aspectRatio: 0.077
-  efficiencyFactor: 0.312
-  dragUpCoefficient: 0.745
+  aspectRatio: 0.155
+  efficiencyFactor: 0.647
+  dragUpCoefficient: 0.826
   dragForwardCoefficient: 0.013
-  dragLeftCoefficient: 0.979
+  dragLeftCoefficient: 0.973
 --- !u!1 &2121913383
 GameObject:
   m_ObjectHideFlags: 0
@@ -2753,7 +2764,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 5106210680462141379}
   - {fileID: 2949194475102606727}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2975,14 +2985,15 @@ MonoBehaviour:
   aileronRight: {fileID: 5923859540508710997}
   elevatorLeft: {fileID: 1636693785522192247}
   elevatorRight: {fileID: 5907419935082492132}
-  maxManeuveringSpeed: 500
-  minManeuveringSpeed: 50
+  maxManeuveringSpeed: 333
+  minManeuveringSpeed: 111
   maxDeflectionAnglePitch: 15
   minDeflectionAnglePitch: 5
   maxDeflectionAngleYaw: 0
   minDeflectionAngelYae: 0
   maxDeflectionAngleRoll: 25
   minDeflectionAngleRoll: 15
+  speedBrakeDragCoef: 0.8
   maxThrust: 160000
   throttleSpeed: 10
 --- !u!4 &3389310346087877993
@@ -3110,7 +3121,7 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 1
+  m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
 --- !u!1 &4300069011480210979
@@ -3299,11 +3310,11 @@ Transform:
   m_GameObject: {fileID: 8557017192272412268}
   serializedVersion: 2
   m_LocalRotation: {x: 0.1670382, y: 0.000000008671714, z: -0.00000004385434, w: 0.98595047}
-  m_LocalPosition: {x: 0, y: 4.05, z: -7.5}
-  m_LocalScale: {x: 1, y: 1.0705293, z: 0.9635237}
+  m_LocalPosition: {x: 316.53, y: 9.51, z: -111.4}
+  m_LocalScale: {x: 1, y: 1.0705292, z: 0.9635236}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1518587357264089857}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 19.231, y: 0, z: 0}
 --- !u!1 &5166381619091552267
 GameObject:
@@ -3839,6 +3850,7 @@ GameObject:
   - component: {fileID: 4261108845922693366}
   - component: {fileID: 3261300975105721173}
   - component: {fileID: 2007150579}
+  - component: {fileID: 7182409924477150392}
   m_Layer: 0
   m_Name: CrashTestPlane (1)
   m_TagString: Untagged
@@ -3846,6 +3858,20 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &7182409924477150392
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7182409924477150391}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b653e227a5af264b9c889d693df17ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Player.ThirdPersonCamera
+  mainCamera: {fileID: 5226363247091690782}
+  cameraOffset: {x: 0, y: 2.77, z: -6.96}
 --- !u!1 &7332650808854858392
 GameObject:
   m_ObjectHideFlags: 0
@@ -4170,6 +4196,7 @@ MonoBehaviour:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 5106210680462141379}
   - {fileID: 1819064785}
   - {fileID: 770233076}
   - {fileID: 1518587357264089857}

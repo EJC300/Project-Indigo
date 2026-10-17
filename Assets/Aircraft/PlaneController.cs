@@ -51,18 +51,18 @@ namespace Aircraft
 
         private Vector3 CalculateGForce()
         {
-           Vector3 globalVelocity = transform.TransformDirection(body.GetLinearVelocity());
-            Vector3 globalAngularVelocity = transform.TransformDirection(body.GetAngularVelocity());
-            return Vector3.Cross(globalAngularVelocity,globalVelocity) * 9.8f;
+   
+            return Vector3.Cross(rb.angularVelocity, rb.linearVelocity) * 9.8f;
         }
         private float GLimit(float input)
         {
-            float gForce = CalculateGForce().magnitude;
            
-            currentG =  input*  gForce;
+            float gForce = CalculateGForce().sqrMagnitude;
+           
+            currentG =   gForce;
             acceleration = previousG - currentG/Time.fixedDeltaTime;
-            float newInput = Utilities.MathUtilities.UnclampedInverseLerp(-minG, maxG, currentG);
-         
+            float newInput = input * Utilities.MathUtilities.UnclampedInverseLerp(-minG, maxG, currentG);
+            Debug.Log(newInput);
             if(currentG > maxG )
             {
                 return newInput;

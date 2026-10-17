@@ -1,6 +1,7 @@
-
+﻿
 
 using UnityEngine;
+using UnityEngine.Windows;
 using Utilities;
 
 namespace Aircraft
@@ -32,6 +33,7 @@ namespace Aircraft
 
         [SerializeField] private float throttleSpeed;
         private float pitchInputAngle;
+        private float yawInputAngle;
         private float rollInputAngle;
         float pitchTarget = 0;
         private bool speedBrakes;
@@ -45,38 +47,53 @@ namespace Aircraft
         private float deflectionAnglePitch;
         private float deflectionAngleYaw;
         private float deflectionAngleRoll;
-        
+        public float newPitchInput;
 
-
+        private Vector3 lastVelocity;
+        private float gravityMagnitude = 9.81f;
 
         private Vector3 CalculateGForce()
         {
-   
-            return Vector3.Cross(rb.angularVelocity, rb.linearVelocity) * 9.8f;
+       
+            Vector3 currentVelocity = rb.linearVelocity;
+            Vector3 acceleration = (currentVelocity - lastVelocity) / Time.fixedDeltaTime;
+           
+
+           
+            acceleration -= Physics.gravity;
+
+           
+            Vector3 localAcceleration = transform.InverseTransformDirection(acceleration);
+            Debug.Log(localAcceleration/gravityMagnitude);
+        
+            return localAcceleration / gravityMagnitude;
         }
-        private float GLimit(float input)
+        private void GLimit(float input)
         {
-           
-            float gForce = CalculateGForce().sqrMagnitude;
-           
-            currentG =   gForce;
-            acceleration = previousG - currentG/Time.fixedDeltaTime;
-            float newInput = input * Utilities.MathUtilities.UnclampedInverseLerp(-minG, maxG, currentG);
-            Debug.Log(newInput);
-            if(currentG > maxG )
+
+        
+            float gForce = CalculateGForce().y;
+            currentG = gForce;
+
+            
+         
+
+     
+            if (Mathf.Abs(currentG) > minG)
             {
-                return newInput;
+               
+                if (Mathf.Sign(input) == Mathf.Sign(currentG))
+                {
+                   
+                    float controlMultiplier = Mathf.InverseLerp(maxG, minG, Mathf.Abs(currentG));
+
+                    newPitchInput = controlMultiplier;
+                }
             }
-            else if (currentG < -minG)
-            {
-                return newInput;
-            }
-            else if (currentG== 0)
-            {
-                return input;
-            }
-                previousG = currentG;
-            return input;
+
+
+
+
         }
         void AnimateControlSurfaces()
         {
@@ -106,17 +123,23 @@ namespace Aircraft
             float speed = Mathf.InverseLerp( maxManeuveringSpeed, minManeuveringSpeed, body.GetLinearVelocity().z);
           
             deflectionAnglePitch = Mathf.Lerp(minDeflectionAnglePitch, maxDeflectionAnglePitch, speed);
+
             pitchInputAngle = Mathf.Clamp(pitchInputAngle, -deflectionAnglePitch, deflectionAnglePitch);
 
             float pitchForce = pitchInputAngle * body.GetPressure;
 
          
 
+
+          
             deflectionAngleRoll = Mathf.Lerp(maxDeflectionAngleRoll, minDeflectionAngleRoll, speed);
             rollInputAngle = Mathf.Clamp(rollInputAngle, -deflectionAngleRoll, deflectionAngleRoll);
-        
+            
             float rollForce = rollInputAngle * body.GetPressure;
-
+            deflectionAngleYaw = Mathf.Lerp(maxDeflectionAngleYaw, minDeflectionAngelYae, speed);
+            yawInputAngle = Mathf.Clamp(yawInputAngle, -deflectionAngleYaw, deflectionAngleYaw);
+            float yawForce = yawInputAngle * body.GetPressure;
+            rb.AddRelativeTorque(Vector3.up * yawForce);
             rb.AddRelativeTorque(Vector3.right * pitchForce);
             rb.AddRelativeTorque(Vector3.forward * rollForce);
         }
@@ -137,26 +160,41 @@ namespace Aircraft
 
         }
 
-
+        public void SetYaw(float input)
+        {
+            if (Mathf.Abs(input) <= 0)
+            {
+                yawInputAngle = 0;
+            }
+            else
+            {
+                yawInputAngle += input* 45 * Time.fixedDeltaTime;
+            }
+         
+        }
 
 
         public void SetPitch(float input)
         {
-            float glimit = GLimit(input);
-            Debug.Log(glimit);
-        
-            if (Mathf.Abs(input) <= 0)
+            GLimit(input);
+           
+
+            if ((input) == 0)
             {
                 pitchTarget = 0;
             }
             else
             {
-                pitchTarget +=  45 * Time.fixedDeltaTime;
+                pitchTarget += input * 45 * Time.fixedDeltaTime;
             }
+            float maxAllowedAngle = pitchTarget * newPitchInput;
 
-                pitchInputAngle = Mathf.MoveTowards(pitchInputAngle, pitchTarget * glimit, Time.fixedDeltaTime  * 15) ;
+            if (pitchTarget > 0) pitchTarget = Mathf.Min(pitchTarget, maxAllowedAngle);
+            else pitchTarget = Mathf.Max(pitchTarget, maxAllowedAngle);
+            pitchInputAngle = Mathf.MoveTowards(pitchInputAngle,  pitchTarget, Time.fixedDeltaTime * 15);
                 
         }
+     
         public void SetRoll(float input)
         {
     
@@ -191,6 +229,8 @@ namespace Aircraft
         {
             rb = GetComponent<Rigidbody>();
             body = GetComponent<AeroBody>();
+
+            lastVelocity = rb.linearVelocity;
         }
 
         private void Update()
@@ -200,12 +240,13 @@ namespace Aircraft
         private void FixedUpdate()
         {
 
-          
+           
             ApplyThrust();
             PitchYawRoll();
             SpeedBrakes();
             AnimateControlSurfaces();
 
+            lastVelocity = rb.linearVelocity;
 
         }
 

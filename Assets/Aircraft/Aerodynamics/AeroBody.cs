@@ -17,6 +17,7 @@ namespace Aircraft
         //Forces 
 
         private Rigidbody rb;
+        public Rigidbody RB;
         private Vector3 localVelocity;
         private Vector3 localAngularVelocity;
         private Vector3 speed;
@@ -123,6 +124,7 @@ namespace Aircraft
         private void Start()
         {
             rb = GetComponent<Rigidbody>();
+            RB= rb;
         }
         private void FixedUpdate()
         {

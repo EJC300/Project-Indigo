@@ -91,7 +91,7 @@ namespace Player
         void YawInput()
         {
             float yaw = yawAction.ReadValue<float>();
-           // aircraftController.ApplyYaw(yaw);
+           aircraftController.SetYaw(yaw);
 
         }
 

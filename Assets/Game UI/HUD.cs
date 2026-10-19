@@ -1,54 +1,67 @@
 using Aircraft;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.TextCore.Text;
+using TMPro;
 namespace GameUI
 {
     public class HUD : MonoBehaviour
     {
+        [SerializeField] private PlaneController plane;
         [SerializeField] private AeroBody body;
-        [SerializeField] private Transform flightPathMarker;
-        [SerializeField] private Transform boreSight;
-        
-        public Vector3 CameraToScreenPoint(Vector3 pos)
-        {
-            Vector3 centerPos = new Vector3(Camera.main.scaledPixelWidth / 2, Camera.main.scaledPixelHeight / 2, 0);
-            return  Camera.main.WorldToScreenPoint(pos - centerPos );
-        }
-        void CheckVisibility()
-        {
-            bool visibility = Mathf.Abs( Camera.main.transform.eulerAngles.y) < 5 || Mathf.Abs(Camera.main.transform.eulerAngles.x) < 5;
-            flightPathMarker.gameObject.SetActive(visibility);
-        }
-        Quaternion KeepRotation(Vector3 screenForwardPos,Vector3 rectPos)
-        {
-            Vector2 screenDirection = (Vector2)(screenForwardPos - rectPos);
+        [SerializeField] private RectTransform flightPathMarker;
+        [SerializeField] private RectTransform boreSight;
 
-            // Calculate the angle in degrees
-            float angle = Vector3.Angle(screenForwardPos, rectPos);
-           
-            return (Quaternion.Euler(angle,angle,0));
+        [SerializeField] private TMP_Text speedIndicator;
+        [SerializeField] private TMP_Text aoaIndicator;
+        [SerializeField] private TMP_Text gForceIndicator;
+
+        private Vector3 localVelocity;
+        private Vector3 boresightPosition;
+        
+        
+       
+        private void FixedUpdate()
+        {
+            localVelocity = body.GetLinearVelocity();
+            boreSight.anchoredPosition = new Vector2(0,0);
+            FlightPathMarker();
+            Indicators();
         }
-        void Boresight()
-        { 
-        
-          Vector3 targetForward   = Camera.main.WorldToScreenPoint( body.transform.position + body.transform.forward);
-            boreSight.rotation = KeepRotation(targetForward,boreSight.position);
-        
+
+        void Indicators()
+        {
+            speedIndicator.text = $" SPD   {Mathf.RoundToInt(body.GetLinearVelocity().z * 3.6f ).ToString()  }/Kmh";
+            aoaIndicator.text = $" AOA   {Mathf.Round(body.GetAngleOfAttack())}";
+            gForceIndicator.text = $"G   ~{Mathf.Round(plane.GetGforce() * 1000) / 1000}";
+            float redWarning = Mathf.InverseLerp(0, plane.GetMaxAOA, body.GetAngleOfAttack() * Mathf.Rad2Deg);
+            Color aoaColor = aoaIndicator.color;
+            Color green = Color.green;
+            if (body.GetAngleOfAttack() > 0.0f)
+            {
+                aoaColor.r = Mathf.Lerp(aoaColor.r, 1, redWarning);
+            }
+            else
+            {
+                aoaColor = green;
+            }
         }
         void FlightPathMarker()
         {
-            Vector3 velocityPoint = (  body.transform.position + (body.GetLinearVelocity().normalized * 5));
-            
-            Vector3 fpmPos = Camera.main.WorldToScreenPoint(velocityPoint);
-            
-            flightPathMarker.rotation = KeepRotation(fpmPos,flightPathMarker.position);
-            flightPathMarker.position = fpmPos;
+           float posY = boresightPosition.y -(body.GetLinearVelocity().y + body.GetAngleOfAttack() ) * PixelsPerDegree();
+           float posX = boresightPosition.x - Mathf.Atan2(body.GetLinearVelocity().x, body.GetLinearVelocity().z)* Mathf.Rad2Deg * PixelsPerDegree();
+
+            flightPathMarker.anchoredPosition = new Vector3(posX,posY) ;
+            bool enabled = Mathf.Abs(body.transform.InverseTransformDirection(Camera.main.transform.eulerAngles).y) < 25;
+            //flightPathMarker.gameObject.SetActive(enabled);
+           // boreSight.gameObject.SetActive(enabled);
         }
-        private void FixedUpdate()
+
+        float PixelsPerDegree()
         {
-            //CheckVisibility();
-            FlightPathMarker();
-            Boresight();
-         
+            float pixels = Camera.main.scaledPixelHeight + Camera.main.scaledPixelWidth;
+            return Mathf.Tan(pixels / 15);
         }
+
     }
 }

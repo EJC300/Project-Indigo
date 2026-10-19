@@ -52,6 +52,7 @@ namespace Aircraft
         private Vector3 lastVelocity;
         private float gravityMagnitude = 9.81f;
 
+       
         private Vector3 CalculateGForce()
         {
        
@@ -62,11 +63,20 @@ namespace Aircraft
            
             acceleration -= Physics.gravity;
 
-           
+            lastVelocity = currentVelocity;
             Vector3 localAcceleration = transform.InverseTransformDirection(acceleration);
-            Debug.Log(localAcceleration/gravityMagnitude);
+           
         
             return localAcceleration / gravityMagnitude;
+        }
+        public float GetMaxAOA
+        {
+            get { return maxAOA; }
+        }
+        
+        public float GetGforce()
+        {
+            return currentG;
         }
         private void GLimit(float input)
         {
@@ -145,7 +155,10 @@ namespace Aircraft
         }
         
 
-
+        public bool TriggerAfterBurnerEffect()
+        {
+            return currentThrust >= maxThrust * 0.80f;
+        }
 
         public void SetThrottle(float input)
         {
@@ -246,7 +259,7 @@ namespace Aircraft
             SpeedBrakes();
             AnimateControlSurfaces();
 
-            lastVelocity = rb.linearVelocity;
+     
 
         }
 

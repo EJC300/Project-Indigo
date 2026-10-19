@@ -1339,7 +1339,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1202234389
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2556,7 +2556,7 @@ Light:
   m_Enabled: 1
   serializedVersion: 13
   m_Type: 1
-  m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
+  m_Color: {r: 1, g: 0.2614692, b: 0, a: 1}
   m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
@@ -2567,7 +2567,7 @@ Light:
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
-    m_Bias: 0.05
+    m_Bias: 0.31
     m_NormalBias: 0.4
     m_NearPlane: 0.2
     m_CullingMatrixOverride:
@@ -2619,13 +2619,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1819064783}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
+  m_LocalRotation: {x: -0.06271318, y: -0.25827292, z: -0.01680395, w: 0.96388793}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+  m_LocalEulerAnglesHint: {x: -7.445, y: -30, z: 0}
 --- !u!1 &1912259657
 GameObject:
   m_ObjectHideFlags: 0
@@ -2761,7 +2761,7 @@ MonoBehaviour:
   aspectRatio: 0.155
   efficiencyFactor: 0.055
   dragUpCoefficient: 0.826
-  dragForwardCoefficient: 0.079
+  dragForwardCoefficient: 0.005
   dragLeftCoefficient: 0.973
 --- !u!1 &2121913383
 GameObject:
@@ -3394,7 +3394,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AircraftData.Aerobody
   maxAOA: 0
   maxG: 9.8
-  minG: 3
+  minG: 2
   aileronLeft: {fileID: 8790664612266287074}
   aileronRight: {fileID: 5923859540508710997}
   elevatorLeft: {fileID: 1636693785522192247}
@@ -3410,6 +3410,7 @@ MonoBehaviour:
   speedBrakeDragCoef: 0.8
   maxThrust: 160000
   throttleSpeed: 10
+  newPitchInput: 0
 --- !u!4 &3389310346087877993
 Transform:
   m_ObjectHideFlags: 0

@@ -154,12 +154,22 @@ namespace Aircraft
             rb.AddRelativeTorque(Vector3.forward * rollForce);
         }
         
-
+        public float GetThrust()
+        {
+            return currentThrust;
+        }
         public bool TriggerAfterBurnerEffect()
         {
-            return currentThrust >= maxThrust * 0.80f;
+            return currentThrust > maxThrust * 0.80f;
         }
-
+        public float MilThrustAmount()
+        {
+            return maxThrust * 0.80f;
+        }
+        public float FullAfterBurnerAmount()
+        {
+            return maxThrust;
+        }
         public void SetThrottle(float input)
         {
             throttle += input / 100;

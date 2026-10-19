@@ -18,15 +18,18 @@ namespace GameUI
 
         private Vector3 localVelocity;
         private Vector3 boresightPosition;
-        
-        
-       
+
+
+
         private void FixedUpdate()
         {
-            localVelocity = body.GetLinearVelocity();
-            boreSight.anchoredPosition = new Vector2(0,0);
-            FlightPathMarker();
-            Indicators();
+            if (plane != null && body != null)
+            {
+                localVelocity = body.GetLinearVelocity();
+                boreSight.anchoredPosition = new Vector2(0, 0);
+                FlightPathMarker();
+                Indicators();
+            }
         }
 
         void Indicators()

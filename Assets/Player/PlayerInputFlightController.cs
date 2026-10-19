@@ -47,17 +47,21 @@ namespace Player
         }
         private void Update()
         {
-            SetLookAxis();
+            if (aircraftController != null)
+            {
+                SetLookAxis();
+            }
         }
         private void FixedUpdate()
         {
-        
-                
+            if (aircraftController != null)
+            {
+
                 SetThrottle();
                 RollInput();
                 PitchInput();
                 YawInput();
-            
+            }
         }
         
         void SetLookAxis()

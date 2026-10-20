@@ -94,7 +94,7 @@ namespace Aircraft
                     Debug.Log("GLimit");
                     float controlMultiplier =  Mathf.InverseLerp(maxG, minG, Mathf.Abs(currentG));
 
-                    newPitchInput = Mathf.SmoothDamp(newPitchInput,  controlMultiplier,ref currentVelocity,Time.fixedDeltaTime * 0.05f);
+                    newPitchInput = Mathf.Lerp(newPitchInput, controlMultiplier, controlMultiplier);
                 
             
 

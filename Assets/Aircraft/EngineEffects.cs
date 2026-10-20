@@ -1,4 +1,5 @@
 using UnityEngine;
+using GameInfrastructure;
 namespace Aircraft
 {
     public class EngineEffects : MonoBehaviour
@@ -18,7 +19,9 @@ namespace Aircraft
             float afterBurnerScale = throttleAfterBurner;
             afterBurnerMeshScaler.transform.localScale = new Vector3(afterBurnerMeshScaler.transform.localScale.x, afterBurnerMeshScaler.transform.localScale.y, afterBurnerScale);
         }
-
+        private void OnEnable()
+        {
+        }
         private void Update()
         {
             AfterBurnerEffect();
@@ -29,6 +32,8 @@ namespace Aircraft
         {
             body = GetComponentInParent<AeroBody>();
             planeController = GetComponentInParent<PlaneController>();
+
+          
         }
 
     

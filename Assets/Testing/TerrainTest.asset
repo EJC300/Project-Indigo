@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.TerrainTools.Editor::UnityEngine.TerrainTools.TerrainPalette
   PaletteLayers:
   - {fileID: 8574412962073106934, guid: 3a33e0161d361c043901e06317f31925, type: 2}
+  - {fileID: 8574412962073106934, guid: 3a33e0161d361c043901e06317f31925, type: 2}

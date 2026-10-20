@@ -47,12 +47,12 @@ namespace Aircraft
         private float deflectionAnglePitch;
         private float deflectionAngleYaw;
         private float deflectionAngleRoll;
-        public float newPitchInput;
+       private float newPitchInput;
 
         private Vector3 lastVelocity;
         private float gravityMagnitude = 9.81f;
 
-       
+        float currentVelocity;
         private Vector3 CalculateGForce()
         {
        
@@ -81,30 +81,32 @@ namespace Aircraft
         private void GLimit(float input)
         {
 
-        
+
             float gForce = CalculateGForce().y;
             currentG = gForce;
 
+
+
+
+
+           
+           
+                    Debug.Log("GLimit");
+                    float controlMultiplier =  Mathf.InverseLerp(maxG, minG, Mathf.Abs(currentG));
+
+                    newPitchInput = Mathf.SmoothDamp(newPitchInput,  controlMultiplier,ref currentVelocity,Time.fixedDeltaTime * 0.05f);
+                
             
-         
-
-     
-            if (Mathf.Abs(currentG) > minG)
-            {
-               
-                if (Mathf.Sign(input) == Mathf.Sign(currentG))
-                {
-                   
-                    float controlMultiplier = Mathf.InverseLerp(maxG, minG, Mathf.Abs(currentG));
-
-                    newPitchInput = controlMultiplier;
-                }
-            }
 
 
 
 
         }
+
+
+
+
+
         void AnimateControlSurfaces()
         {
         

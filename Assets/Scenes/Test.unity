@@ -1806,6 +1806,52 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1334252506}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1353127897
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1353127899}
+  - component: {fileID: 1353127898}
+  m_Layer: 0
+  m_Name: OriginShift
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1353127898
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1353127897}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1849572d45e015a42bfbc221682c9fc0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameInfrastructure.OriginShift
+  playerCamera: {fileID: 5106210680462141379}
+  limit: 1000
+--- !u!4 &1353127899
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1353127897}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 318.361, y: 6.0489, z: -106.42137}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1354881398
 GameObject:
   m_ObjectHideFlags: 0
@@ -2243,6 +2289,7 @@ GameObject:
   - component: {fileID: 1498219996}
   - component: {fileID: 1498219995}
   - component: {fileID: 1498219994}
+  - component: {fileID: 1498219997}
   m_Layer: 0
   m_Name: Terrain
   m_TagString: Untagged
@@ -2322,9 +2369,23 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1652932732}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1498219997
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1498219993}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f487c2f81d1331a46873fd31f8929d19, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RegisterOriginShift
+  originShift: {fileID: 1353127898}
 --- !u!224 &1514095805 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4864347343113879396, guid: f6806128288b17d45b68115345394f00, type: 3}
@@ -2642,13 +2703,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1652932728}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 316, y: 4, z: 593}
   m_LocalScale: {x: 5.0538425, y: 1, z: 141.00288}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1114955341}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1498219996}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1710641110
 GameObject:
@@ -4032,7 +4093,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AircraftData.Aerobody
   maxAOA: 0
   maxG: 9.8
-  minG: 2
+  minG: 3
   aileronLeft: {fileID: 8790664612266287074}
   aileronRight: {fileID: 5923859540508710997}
   elevatorLeft: {fileID: 1636693785522192247}
@@ -4043,9 +4104,9 @@ MonoBehaviour:
   minDeflectionAnglePitch: 5
   maxDeflectionAngleYaw: 5
   minDeflectionAngelYae: 2
-  maxDeflectionAngleRoll: 25
-  minDeflectionAngleRoll: 15
-  speedBrakeDragCoef: 0.8
+  maxDeflectionAngleRoll: 45
+  minDeflectionAngleRoll: 20
+  speedBrakeDragCoef: 1.2
   maxThrust: 160000
   throttleSpeed: 10
   newPitchInput: 0
@@ -5374,6 +5435,6 @@ SceneRoots:
   - {fileID: 770233076}
   - {fileID: 1518587357264089857}
   - {fileID: 1498219996}
-  - {fileID: 1652932732}
   - {fileID: 863511927}
   - {fileID: 618256893}
+  - {fileID: 1353127899}

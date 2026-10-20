@@ -1,5 +1,6 @@
 using UnityEngine;
 using Utilities;
+using GameInfrastructure;
 namespace Aircraft
 {
     [RequireComponent(typeof(Rigidbody))]
@@ -54,7 +55,10 @@ namespace Aircraft
         [Range(0.0f, 1.0f)]
         [SerializeField] private float dragUpCoefficient, dragForwardCoefficient, dragLeftCoefficient;
 
+        private void OnEnable()
+        {
 
+        }
 
         private void UpdateState()
         {
@@ -125,6 +129,7 @@ namespace Aircraft
         {
             rb = GetComponent<Rigidbody>();
             RB= rb;
+            OriginShift.instance.AddToShifter(this.transform);
         }
         private void FixedUpdate()
         {

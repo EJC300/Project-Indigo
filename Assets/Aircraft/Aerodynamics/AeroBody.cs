@@ -4,8 +4,12 @@ using GameInfrastructure;
 namespace Aircraft
 {
     [RequireComponent(typeof(Rigidbody))]
-    public class AeroBody : MonoBehaviour
+    public class AeroBody : Updatable
     {
+
+
+
+        
 
         /*
          * Adds Drag and lift to the a rigidbody 
@@ -57,9 +61,12 @@ namespace Aircraft
 
         private void OnEnable()
         {
-
+          
         }
-
+        private void OnDisable()
+        {
+            GameFlow.instance.RemoveUpdatable(this);
+        }
         private void UpdateState()
         {
             localVelocity = transform.InverseTransformDirection(rb.linearVelocity);
@@ -125,19 +132,36 @@ namespace Aircraft
         }
 
         //Return angle of attack and pressure
-        private void Start()
+        public override void CustomStart()
         {
             rb = GetComponent<Rigidbody>();
             RB= rb;
-            OriginShift.instance.AddToShifter(this.transform);
+         
         }
-        private void FixedUpdate()
+        public override void CustomFixedUpdate()
         {
-            UpdateState();
+          
+            
+            
+        }
+        public override void CustomLateUpdate()
+        {
+        
+        }
+        public override void CustomUpdate()
+        {
+            if (GameFlow.instance.paused)
+            {
+                rb.isKinematic = !rb.isKinematic;
+                UpdateState();
 
+            }
 
         }
-
+        public void Start()
+        {
+            GameFlow.instance.AddUpdatable(this);
+        }
 
         public float GetAngleOfAttack()
         {

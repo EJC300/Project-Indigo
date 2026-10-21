@@ -7,7 +7,11 @@ namespace GameInfrastructure
         //Time Flow Controller
         [SerializeField] PauseModalWindow pauseModalWindow;
         [SerializeField] GameObject pauseWindow;
-      
+        [SerializeField] GameFlow gameFlow;
+        private void Start()
+        {
+            
+        }
         private void OnEnable()
         {
             pauseModalWindow.PauseModalWindowWindowReturnToMainMenuEvent.voidEventToFire += LoadMainMenu;
@@ -26,16 +30,17 @@ namespace GameInfrastructure
         void OpenPauseWindow()
         {
 
-           
+                gameFlow.SetPaused(true);
                 pauseWindow.SetActive(!pauseWindow.activeInHierarchy);
           
         }
 
         void ClosePauseWindow() 
         {
-
+          
             if (pauseWindow.activeInHierarchy)
             {
+                gameFlow.SetPaused(false);
                 pauseWindow.SetActive(false);
 
             }

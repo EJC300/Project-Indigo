@@ -3,14 +3,23 @@
 using UnityEngine;
 using UnityEngine.Windows;
 using Utilities;
-
+using GameInfrastructure;
 namespace Aircraft
 {
 
     [RequireComponent(typeof(Rigidbody))]
-    public class PlaneController : MonoBehaviour
+    public class PlaneController : Updatable
     {
 
+
+        private void OnEnable()
+        {
+          
+        }
+        private void OnDisable()
+        {
+            GameFlow.instance.RemoveUpdatable(this);
+        }
         private AeroBody body;
         private Rigidbody rb;
         [SerializeField] private float maxAOA;
@@ -249,23 +258,32 @@ namespace Aircraft
 
         }
 
-
         private void Start()
         {
             rb = GetComponent<Rigidbody>();
             body = GetComponent<AeroBody>();
 
+            GameFlow.instance.AddUpdatable(this);
             lastVelocity = rb.linearVelocity;
         }
+        public override void CustomStart()
+        {
+        
 
-        private void Update()
+        }
+
+        public override void CustomUpdate()
         {
             SetSpreadBrakes();
+      
         }
-        private void FixedUpdate()
+        public override void CustomFixedUpdate()
         {
 
+       
            
+           
+            Debug.Log("PlaneController");
             ApplyThrust();
             PitchYawRoll();
             SpeedBrakes();

@@ -41,34 +41,37 @@ namespace GameInfrastructure
            
             for (int i = 0; i < targets.Count; i++) 
             {
-                GameObject targetToShift = targets[i].gameObject;
-                ShiftOriginObject(targetToShift.transform);
-                Rigidbody rigidBody =  targetToShift.GetComponentInChildren<Rigidbody>();
-                if (rigidBody != null)
+                if (targets[i] != null)
                 {
-        
-
-                  rigidBody.MovePosition(ShiftOriginObject(rigidBody.transform.position));
-                }
-
-                //Is VFX Graphics later
-                ParticleSystem particles = targets[i].GetComponentInChildren<ParticleSystem>();
-
-
-                if (particles != null)
-                {
-                   
-                    particles.gameObject.SetActive(!particles.gameObject.activeInHierarchy);
-                    ShiftOriginObject(particles.transform);
-                }
-                TrailRenderer trails = targets[i].GetComponentInChildren<TrailRenderer>();
-                if (trails != null)
-                {
-                    for (int j = 0; j < trails.positionCount; j++)
+                    GameObject targetToShift = targets[i].gameObject;
+                    ShiftOriginObject(targetToShift.transform);
+                    Rigidbody rigidBody = targetToShift.GetComponentInChildren<Rigidbody>();
+                    if (rigidBody != null)
                     {
 
 
-                        trails.SetPosition(j, ShiftOriginObject(trails.GetPosition(j)));
+                        rigidBody.MovePosition(ShiftOriginObject(rigidBody.transform.position));
+                    }
+
+                    //Is VFX Graphics later
+                    ParticleSystem particles = targets[i].GetComponentInChildren<ParticleSystem>();
+
+
+                    if (particles != null)
+                    {
+
+                        particles.gameObject.SetActive(!particles.gameObject.activeInHierarchy);
+                        ShiftOriginObject(particles.transform);
+                    }
+                    TrailRenderer trails = targets[i].GetComponentInChildren<TrailRenderer>();
+                    if (trails != null)
+                    {
+                        for (int j = 0; j < trails.positionCount; j++)
+                        {
+
+
+                            trails.SetPosition(j, ShiftOriginObject(trails.GetPosition(j)));
+                        }
                     }
                 }
             }

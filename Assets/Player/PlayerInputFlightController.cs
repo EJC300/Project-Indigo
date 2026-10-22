@@ -1,5 +1,5 @@
 using Aircraft;
-
+using GameInfrastructure;
 using UnityEngine;
 using UnityEngine.InputSystem;
 namespace Player
@@ -9,6 +9,8 @@ namespace Player
         public InputActionAsset inputAsset;
 
         private InputActionMap inputActions;
+
+        public GameObject pauseWindow;
 
         [SerializeField] private PlaneController aircraftController;
 
@@ -24,6 +26,7 @@ namespace Player
         private InputAction rollAction;
         private InputAction yawAction;
         private InputAction throttleAction;
+        private bool playerDead;
         private void Awake()
         {
             InputActionMap inputActions = inputAsset.FindActionMap("FlightControls");
@@ -45,12 +48,27 @@ namespace Player
            
             
         }
+        private void LateUpdate()
+        {
+         
+        }
         private void Update()
         {
             if (aircraftController != null)
             {
                 SetLookAxis();
+               
             }
+            else
+            {
+                playerDead = true;
+            }
+             if (playerDead)
+            {
+                playerDead = false;
+                pauseWindow.gameObject.SetActive(true);
+            }
+        
         }
         private void FixedUpdate()
         {

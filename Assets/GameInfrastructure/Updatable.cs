@@ -26,6 +26,11 @@ namespace GameInfrastructure
         
         
         }
+
+        public virtual void SetRigidbody(bool setActive)
+        {
+
+        }
         
     }
 

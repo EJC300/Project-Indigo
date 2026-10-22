@@ -7,18 +7,24 @@ using GameInfrastructure;
 namespace Aircraft
 {
 
+
     [RequireComponent(typeof(Rigidbody))]
+   
+    
     public class PlaneController : Updatable
     {
 
-
+        public bool testing;
         private void OnEnable()
         {
           
         }
         private void OnDisable()
         {
-            GameFlow.instance.RemoveUpdatable(this);
+            if (!testing)
+            {
+                GameFlow.instance.RemoveUpdatable(this);
+            }
         }
         private AeroBody body;
         private Rigidbody rb;
@@ -266,6 +272,17 @@ namespace Aircraft
             GameFlow.instance.AddUpdatable(this);
             lastVelocity = rb.linearVelocity;
         }
+        private void FixedUpdate()
+        {
+            if (testing)
+            {
+                Debug.Log("PlaneController");
+                ApplyThrust();
+                PitchYawRoll();
+                SpeedBrakes();
+                AnimateControlSurfaces();
+            }
+        }
         public override void CustomStart()
         {
         
@@ -280,17 +297,18 @@ namespace Aircraft
         public override void CustomFixedUpdate()
         {
 
-       
-           
-           
-            Debug.Log("PlaneController");
-            ApplyThrust();
-            PitchYawRoll();
-            SpeedBrakes();
-            AnimateControlSurfaces();
+            if (!testing)
+            {
 
-     
 
+                Debug.Log("PlaneController");
+                ApplyThrust();
+                PitchYawRoll();
+                SpeedBrakes();
+                AnimateControlSurfaces();
+
+
+            }
         }
 
 

@@ -1,6 +1,7 @@
 using UnityEngine;
 using Utilities;
 using GameInfrastructure;
+using UnityEngine.UIElements;
 namespace Aircraft
 {
     [RequireComponent(typeof(Rigidbody))]
@@ -9,7 +10,7 @@ namespace Aircraft
 
 
 
-        
+
 
         /*
          * Adds Drag and lift to the a rigidbody 
@@ -18,7 +19,8 @@ namespace Aircraft
          * 
          * can be made for planes or missiles
          */
-
+        public bool testing;
+        public bool activate;
         //Forces 
 
         private Rigidbody rb;
@@ -26,7 +28,7 @@ namespace Aircraft
         private Vector3 localVelocity;
         private Vector3 localAngularVelocity;
         private Vector3 speed;
-
+       public Vector3 prevVelocity;
         //Lift 
         [SerializeField] private float wingArea;
         [SerializeField] private float wingAreaYaw;
@@ -65,7 +67,10 @@ namespace Aircraft
         }
         private void OnDisable()
         {
-            GameFlow.instance.RemoveUpdatable(this);
+            if (!testing)
+            {
+                GameFlow.instance.RemoveUpdatable(this);
+            }
         }
         private void UpdateState()
         {
@@ -131,36 +136,82 @@ namespace Aircraft
             }
         }
 
+        public override void SetRigidbody(bool setActive)
+        {
+
+            if (!setActive)
+            {
+
+
+
+                
+                activate = true;
+          
+            }
+     
+          
+
+         
+
+
+        }
+
         //Return angle of attack and pressure
+
+       
         public override void CustomStart()
         {
-            rb = GetComponent<Rigidbody>();
-            RB= rb;
+            if (!testing)
+            {
+                rb = GetComponent<Rigidbody>();
+                RB = rb;
+            }
          
+        }
+        private void FixedUpdate()
+        {
+            if (testing)
+            {
+                UpdateState();
+            }
         }
         public override void CustomFixedUpdate()
         {
-          
+
+            if (!GameFlow.instance.paused && !testing)
+            {   
+                rb.isKinematic = false;
+              
             
-            
+
+           
+                
+
+                UpdateState();
+             
+            }
+           
+
+
         }
         public override void CustomLateUpdate()
         {
-        
+            
         }
         public override void CustomUpdate()
         {
-            if (GameFlow.instance.paused)
-            {
-                rb.isKinematic = !rb.isKinematic;
-                UpdateState();
-
-            }
+           
 
         }
         public void Start()
         {
-            GameFlow.instance.AddUpdatable(this);
+            if (!testing)
+            {
+                GameFlow.instance.AddUpdatable(this);
+
+            }
+            rb = GetComponent<Rigidbody>();
+            RB = rb;
         }
 
         public float GetAngleOfAttack()

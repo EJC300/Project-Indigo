@@ -7,7 +7,7 @@ namespace GameUI
 {
     public class HUD : MonoBehaviour
     {
-        [SerializeField] private PlaneController plane;
+        [SerializeField] private PlaneController plane ;
         [SerializeField] private AeroBody body;
         [SerializeField] private RectTransform flightPathMarker;
         [SerializeField] private RectTransform boreSight;

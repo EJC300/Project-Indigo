@@ -58,14 +58,34 @@ namespace GameInfrastructure
         private void Update()
         {
 
-            for (int i = 0; i < updatables.Count; i++)
-            {
-                if (!paused)
-                {
+            if(paused)
 
-                    updatables[i].CustomUpdate();
-                }
+            {
+                Physics.simulationMode = SimulationMode.Script;   
+                Physics2D.simulationMode = SimulationMode2D.Script;
             }
+            else
+            {
+                Physics.simulationMode = SimulationMode.FixedUpdate;   
+                Physics2D.simulationMode = SimulationMode2D.FixedUpdate;
+            }
+
+                for (int i = 0; i < updatables.Count; i++)
+                {
+                    if (!paused)
+                    {
+
+                        updatables[i].CustomUpdate();
+                    }
+                    if (paused)
+                    {
+                        updatables[i].SetRigidbody(true);
+                    }
+                    else
+                    {
+                        updatables[i].SetRigidbody(false);
+                    }
+                }
             
         }
 

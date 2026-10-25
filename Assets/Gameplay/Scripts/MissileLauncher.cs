@@ -23,10 +23,10 @@ namespace Gameplay
         void FireMissile()
         {
             Vector3 launchVelocity = CalculateLaunchVelocity();
-            GameObject missileInstance = GameObject.Instantiate(missilePrefab,missilePoint.position,transform.rotation);
+            GameObject missileInstance = GameObject.Instantiate(missilePrefab,missilePoint.position,missilePoint.rotation);
             Rigidbody missileRB = missileInstance.GetComponent<Rigidbody>();
             MissileGuidance missileGuidance = missileInstance.GetComponent<MissileGuidance>();
-            missileGuidance.targetTest = target;
+            missileGuidance.target = target.gameObject;
             missileRB.AddRelativeForce(launchVelocity,ForceMode.Impulse);
 
         }

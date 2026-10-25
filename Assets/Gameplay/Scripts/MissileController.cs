@@ -1,5 +1,6 @@
 using Aircraft;
 using GameInfrastructure;
+using System.Net.NetworkInformation;
 using UnityEngine;
 public class MissileController : Updatable
 {
@@ -19,6 +20,8 @@ public class MissileController : Updatable
     private AeroBody body;
     private Rigidbody rb;
 
+    [SerializeField] private float maxG;
+    [SerializeField] private float minG;
 
     [SerializeField] private ControlSurfaceAnimatable aileronLeft;
     [SerializeField] private ControlSurfaceAnimatable aileronRight;
@@ -52,7 +55,8 @@ public class MissileController : Updatable
     private float deflectionAngleYaw;
     private float deflectionAngleRoll;
     private float newPitchInput;
-
+    private float yawForce;
+    private float pitchForce;
     private Vector3 lastVelocity;
     private float gravityMagnitude = 9.81f;
 
@@ -73,11 +77,48 @@ public class MissileController : Updatable
 
         return localAcceleration / gravityMagnitude;
     }
-  
+
+    public float GetGforce()
+    {
+        return currentG;
+    }
+    private void GLimit(float input)
+    {
+
+
+        float gForce = CalculateGForce().y;
+        currentG = gForce;
 
 
 
 
+
+
+
+        Debug.Log("GLimit");
+        float controlMultiplier = Mathf.InverseLerp(maxG, minG, Mathf.Abs(currentG));
+
+        newPitchInput = Mathf.Lerp(newPitchInput, controlMultiplier, controlMultiplier);
+
+
+
+
+
+
+    }
+
+
+
+
+    public float GetYawForce()
+    {
+        return yawForce;
+    }
+
+    public float GetPitchForce()
+    {
+        return pitchForce;
+    }
 
 
 
@@ -105,22 +146,21 @@ public class MissileController : Updatable
 
         pitchInputAngle = Mathf.Clamp(pitchInputAngle, -deflectionAnglePitch, deflectionAnglePitch);
 
-        float pitchForce = pitchInputAngle * body.GetPressure;
+        pitchForce = pitchInputAngle * body.GetPressure;
+
+ 
 
 
+       // deflectionAngleRoll = Mathf.Lerp(maxDeflectionAngleRoll, minDeflectionAngleRoll, speed);
+      //  rollInputAngle = Mathf.Clamp(rollInputAngle, -deflectionAngleRoll, deflectionAngleRoll);
 
-
-
-        deflectionAngleRoll = Mathf.Lerp(maxDeflectionAngleRoll, minDeflectionAngleRoll, speed);
-        rollInputAngle = Mathf.Clamp(rollInputAngle, -deflectionAngleRoll, deflectionAngleRoll);
-
-        float rollForce = rollInputAngle * body.GetPressure;
+       // float rollForce = rollInputAngle * body.GetPressure;
         deflectionAngleYaw = Mathf.Lerp(maxDeflectionAngleYaw, minDeflectionAngelYae, speed);
         yawInputAngle = Mathf.Clamp(yawInputAngle, -deflectionAngleYaw, deflectionAngleYaw);
-        float yawForce = yawInputAngle * body.GetPressure;
+        yawForce = yawInputAngle * body.GetPressure;
         
-        rb.AddRelativeTorque(Vector3.forward * pitchForce);
-        rb.AddRelativeTorque(Vector3.up * rollForce);
+        rb.AddRelativeTorque(Vector3.right * pitchForce);
+        rb.AddRelativeTorque(Vector3.up * yawForce);
     }
 
 
@@ -142,7 +182,10 @@ public class MissileController : Updatable
 
     public void SetPitch(float input)
     {
-      
+
+        GLimit(input);
+
+
         if ((input) == 0)
         {
             pitchTarget = 0;
@@ -153,8 +196,9 @@ public class MissileController : Updatable
         }
         float maxAllowedAngle = pitchTarget * newPitchInput;
 
+        if (pitchTarget > 0) pitchTarget = Mathf.Min(pitchTarget, maxAllowedAngle);
+        else pitchTarget = Mathf.Max(pitchTarget, maxAllowedAngle);
         pitchInputAngle = Mathf.MoveTowards(pitchInputAngle, pitchTarget, Time.fixedDeltaTime * 15);
-
     }
 
     public void SetRoll(float input)

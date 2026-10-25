@@ -84,11 +84,7 @@ namespace Aircraft
         
             return localAcceleration / gravityMagnitude;
         }
-        public float GetMaxAOA
-        {
-            get { return maxAOA; }
-        }
-        
+  
         public float GetGforce()
         {
             return currentG;
@@ -119,6 +115,10 @@ namespace Aircraft
         }
 
 
+        public float GetMaxAOA
+        {
+            get { return maxAOA; }
+        }
 
 
 

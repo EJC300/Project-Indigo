@@ -1,5 +1,6 @@
 using UnityEngine;
-using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
+using static UnityEngine.GraphicsBuffer;
+
 
 public class BasicMissile : MonoBehaviour
 {
@@ -17,15 +18,15 @@ public class BasicMissile : MonoBehaviour
 
     [SerializeField] private Rigidbody rb;
 
-    private Vector3 targetPosition;
+    [SerializeField] private Vector3 targetPosition;
 
-    private Vector3 previousTargetPosition;
+    [SerializeField] private Vector3 previousTargetPosition;
 
-    private Vector3 targetVelocity;
+    [SerializeField] private Vector3 targetVelocity;
 
-    private Vector3 previousTargetVelocity;
+    [SerializeField] private Vector3 previousTargetVelocity;
 
-    private Vector3 targetAcceleration;
+    [SerializeField] private Vector3 targetAcceleration;
 
     private Vector3 previousTargetAcceleration;
     private Vector3 relativeVelocity;
@@ -38,11 +39,13 @@ public class BasicMissile : MonoBehaviour
         TargetAcceleration();
         RelativeVelocity();
         Debug.Log((AccelerationCommand() - transform.position).normalized);
-        rb.AddRelativeForce(Vector3.forward * missileSpeed, ForceMode.Acceleration);
+       // rb.AddRelativeForce(Vector3.forward * missileSpeed, ForceMode.Acceleration);
         Vector3 toTarget = target.transform.position - rb.position;
         Vector3 velocity = (AccelerationCommand());
         Vector3 direction = toTarget.normalized + velocity;
-        transform.rotation = Quaternion.LookRotation(direction  * Time.fixedDeltaTime * missileTurnRate);
+        Debug.Log(direction.normalized * missileTurnRate);
+        transform.rotation = Quaternion.LookRotation(direction.normalized  * missileTurnRate);
+        previousTargetPosition = targetPosition;
     }
     void TargetAcceleration()
     {
@@ -61,21 +64,34 @@ public class BasicMissile : MonoBehaviour
 
     Vector3 AccelerationCommand()
     {
-        Vector3 lead = target.transform.position + targetVelocity;
-        Vector3 toTarget = lead;
-       float distance = toTarget.sqrMagnitude;
-        Vector3 los = toTarget.normalized;
-        Vector3 relativeVelocity =  targetVelocity - rb.linearVelocity;
-        float terminalVelocity = Vector3.Dot(relativeVelocity, los);
-        Vector3 losRate = Vector3.Cross( relativeVelocity,los) / distance;
-        Vector3 accelCommand = navConstant * terminalVelocity * losRate * AccelerationBias();
-        return accelCommand;
+        Vector3 currentPosition = transform.position;
+        Vector3 targetPosition = target.transform.position + targetVelocity;
+
+     
+        Vector3 lineOfSightVector = targetPosition - currentPosition;
+        float range = lineOfSightVector.magnitude;
+        Vector3 losNormalized = lineOfSightVector.normalized;
+
+
+        Vector3 relativeVelocity = (target.GetComponent<Rigidbody>()?.linearVelocity ?? Vector3.zero) - rb.linearVelocity;
+
+    
+        Vector3 losRate = Vector3.Cross(losNormalized, relativeVelocity) / range;
+
+   
+        float closingVelocity = -Vector3.Dot(relativeVelocity, losNormalized);
+
+       
+        return  closingVelocity * losRate * navConstant * AccelerationBias();
+
+       
+    
     }
     float AccelerationBias()
     {
         float n = navConstant / 2;
         float acceleration = targetAcceleration.magnitude;
-        float speed = rb.linearVelocity.magnitude;
+        float speed = targetVelocity.magnitude;
         if (speed > 0)
         {
             float delta = acceleration / speed;

@@ -1,8 +1,9 @@
 using Aircraft;
-using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.TextCore.Text;
+using System.Net;
 using TMPro;
+using UnityEngine;
+using UnityEngine.TextCore.Text;
+using UnityEngine.UI;
 namespace GameUI
 {
     public class HUD : MonoBehaviour
@@ -26,7 +27,8 @@ namespace GameUI
             if (plane != null && body != null)
             {
                 localVelocity = body.GetLinearVelocity();
-                boreSight.anchoredPosition = new Vector2(0, 0);
+
+                BoreSightMarker();
                 FlightPathMarker();
                 Indicators();
             }
@@ -51,19 +53,43 @@ namespace GameUI
         }
         void FlightPathMarker()
         {
-           float posY = boresightPosition.y -(body.GetLinearVelocity().y + body.GetAngleOfAttack() ) * PixelsPerDegree();
-           float posX = boresightPosition.x - Mathf.Atan2(body.GetLinearVelocity().x, body.GetLinearVelocity().z)* Mathf.Rad2Deg * PixelsPerDegree();
 
-            flightPathMarker.anchoredPosition = new Vector3(posX,posY) ;
-            bool enabled = Mathf.Abs(body.transform.InverseTransformDirection(Camera.main.transform.eulerAngles).y) < 25;
-            //flightPathMarker.gameObject.SetActive(enabled);
-           // boreSight.gameObject.SetActive(enabled);
+            Vector3 point = ObjectToCameraSpace(Camera.main.transform.position +  body.transform.rotation *body.GetLinearVelocity());
+            flightPathMarker.anchoredPosition = point;
+            if (point.z > 0)
+            {
+                flightPathMarker. gameObject.SetActive(true);
+                flightPathMarker.anchoredPosition = new Vector3(point.x, point.y, 0);
+
+            }
+            else
+            {
+                flightPathMarker.gameObject.SetActive(false);
+            }
+
         }
 
-        float PixelsPerDegree()
+        void BoreSightMarker()
         {
-            float pixels = Camera.main.scaledPixelHeight + Camera.main.scaledPixelWidth;
-            return Mathf.Tan(pixels / 15);
+            Vector3 point = ObjectToCameraSpace(Camera.main.transform.position + body.transform.rotation * body.transform.InverseTransformDirection( body.transform.forward));
+            boreSight.anchoredPosition = point;
+            if (point.z > 0)
+            {
+                boreSight.gameObject.SetActive(true);
+                boreSight.anchoredPosition = new Vector3(point.x, point.y, 0);
+
+            }
+            else
+            {
+                boreSight.gameObject.SetActive(false);
+            }
+        }
+
+       Vector3 ObjectToCameraSpace(Vector3 pos)
+        {
+            Vector3 cameraSpace = Camera.main.WorldToScreenPoint(pos);
+
+            return cameraSpace - new Vector3(Camera.main.scaledPixelWidth / 2, Camera.main.scaledPixelHeight / 2);
         }
 
     }

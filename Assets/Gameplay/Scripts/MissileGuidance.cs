@@ -30,10 +30,13 @@ namespace Gameplay
         [SerializeField] private Vector3 targetAcceleration;
 
         [SerializeField] private Vector3 previousTargetAcceleration;
- 
+        Vector3 previousPosition;
         Vector3 toTarget;
         Vector3 velocity;
         Vector3 direction;
+        Vector3 previousLos;
+
+        float prevClosingVelocity;
         private void Update()
         {
             targetPosition = target.transform.position;
@@ -56,16 +59,16 @@ namespace Gameplay
         void CalculateDirection()
         {
             Vector3 toTarget = target.transform.position - rb.position;
-            Vector3 velocity =  transform.InverseTransformDirection(AccelerationCommand());
-            direction = velocity;
+            Vector3 velocity = transform.InverseTransformDirection  ( toTarget.normalized + AccelerationCommand());
+            direction = velocity.normalized;
            
 
         }
         void TargetAcceleration()
         {
-            targetVelocity = (previousTargetPosition - targetPosition) * Time.fixedDeltaTime;
+            targetVelocity = (previousTargetPosition - targetPosition) / Time.fixedDeltaTime;
 
-            targetAcceleration = (previousTargetVelocity - targetVelocity) * Time.fixedDeltaTime;
+            targetAcceleration = (previousTargetVelocity - targetVelocity) / Time.fixedDeltaTime;
 
             previousTargetVelocity = targetVelocity;
         }
@@ -74,91 +77,67 @@ namespace Gameplay
 
         Vector3 AccelerationCommand()
         {
-               if (target == null) return Vector3.zero;
+            Vector3 currentPosition = transform.position;
+            targetPosition = target.transform.position;
 
-    Vector3 currentPosition = transform.position;
-    Vector3 targetPosition = target.transform.position;
+            Vector3 lineOfSight = targetPosition - currentPosition;
 
-    Vector3 lineOfSightVector = targetPosition - currentPosition;
-    
-    // Use the actual distance (magnitude) for standard ProNav math
-    float distance = lineOfSightVector.magnitude; 
+            Vector3 relativeVelocity = targetVelocity - rb.linearVelocity;
 
-    // SAFETY 1: Close-range cutoff to prevent division by zero or infinite spikes
-    if (distance < 1.5f) 
-    {
-        // Freeze guidance commands completely right before impact 
-        // to let the missile's momentum carry it through the target.
-        return Vector3.zero; 
-    }
+            Vector3 losRate = Vector3.Cross(relativeVelocity, lineOfSight.normalized);
 
-    Vector3 losNormalized = lineOfSightVector / distance;
+            float closingVelocity = Vector3.Dot(losRate, relativeVelocity) / lineOfSight.magnitude;
 
-    // Fetch the target's relative velocity safely
-    Vector3 targetVel = target.GetComponent<Rigidbody>()?.linearVelocity ?? Vector3.zero;
-    Vector3 relativeVelocity = targetVel - rb.linearVelocity;
+            Vector3 losDiff = previousLos - losRate;
+            float closingVelocityDiff = prevClosingVelocity - closingVelocity;
+            previousLos = losRate;
+            prevClosingVelocity = closingVelocity;
+            return navConstant * (-closingVelocityDiff + (navConstant * 0.5f )*9.81f) * losDiff;
 
-    // SAFETY 2: Overshoot check. If the target moves behind the missile's nose, stop guiding.
-    if (Vector3.Dot(transform.forward, losNormalized) < 0f)
-    {
-        return Vector3.zero;
-    }
 
-    // Standard ProNav uses the linear distance denominator for the true angular LOS rate
-    Vector3 losRate = Vector3.Cross(losNormalized, relativeVelocity) / distance;
 
-    float closingVelocity = Vector3.Dot(relativeVelocity, losNormalized);
-
-    // Final global acceleration command vector
-    return closingVelocity * losRate * navConstant;
 
         }
         void SteerMissile()
         {
 
-            float pitchInput = direction.y;
+            float pitchInput = Mathf.Atan2(-direction.y, direction.z);
 
-            float yawInput = direction.x;
+            float yawInput = Mathf.Atan2(direction.x, direction.z);
 
-            float pitchMag = pitchInput;
-
-
-            float yawMag = -yawInput;
+         
          
       
             Vector3 localAngularVel = transform.InverseTransformDirection(rb.angularVelocity);
-            float pitch = pitchPID.CalculatePID(localAngularVel.x, pitchMag, Time.deltaTime)/200;
+            float pitch = pitchPID.CalculatePID(localAngularVel.x, pitchInput, Time.deltaTime)/100;
 
-            float yaw = yawPID.CalculatePID(localAngularVel.y, yawMag, Time.deltaTime)/200;
+            float yaw = yawPID.CalculatePID(localAngularVel.y, yawInput, Time.deltaTime)/100;
             float normalizedPitch = pitch;
             float normalizedYaw = yaw;
             normalizedPitch = Mathf.Clamp(normalizedPitch, -1, 1);
-            normalizedYaw = -Mathf.Clamp(normalizedYaw, -1, 1);
+            normalizedYaw = Mathf.Clamp(normalizedYaw, -1, 1);
 
-            if (Vector3.Distance(transform.position, target.transform.position) < 500f) // Adjust distance to your "halfway" point
-            {
-                Debug.Log($"[Missile Log] Target Yaw Accel: {yawMag:F2} | Current Yaw Rate: {localAngularVel.x:F2} | Yaw PID Output: {normalizedYaw:F2}");
-            }
+  
 
 
-            //Really need to use a PID controller
+          
             missileController.SetPitch(normalizedPitch);
 
             missileController.SetYaw(normalizedYaw);
         }
         float AccelerationBias()
         {
-            float n = navConstant / 2;
+            float n = navConstant;
             float acceleration = targetAcceleration.magnitude;
             float speed = targetVelocity.magnitude;
             if (speed > 0)
             {
                 float delta = acceleration / speed;
-                return n * delta;
+                return ((n * 0.5f) * delta);
             }
             else
             {
-                return n;
+                return 0;
             }
 
         }

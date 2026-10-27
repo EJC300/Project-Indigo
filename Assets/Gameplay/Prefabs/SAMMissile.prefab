@@ -475,7 +475,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Gameplay.MissileMotor
   totalBurnTimeConstant: 6
-  specificImpulse: 340000
+  specificImpulse: 414000
   fuelMassInKg: 45
   currentMass: 0
 --- !u!114 &6214539557847636511
@@ -500,10 +500,10 @@ MonoBehaviour:
   maxManeuveringSpeed: 155
   minManeuveringSpeed: 30
   maxDeflectionAnglePitch: 25
-  minDeflectionAnglePitch: 5
+  minDeflectionAnglePitch: 15
   maxDeflectionAngleYaw: 25
-  minDeflectionAngelYae: 5
-  maxDeflectionAngleRoll: 15
+  minDeflectionAngelYae: 15
+  maxDeflectionAngleRoll: 25
   minDeflectionAngleRoll: 5
 --- !u!96 &8937242697742483149
 TrailRenderer:
@@ -637,21 +637,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Gameplay.MissileGuidance
   pitchPID:
-    proportionalGain: 1
-    integralGain: 1
-    derivativeGain: 1
-    maxProportional: 1
-    maxIntegral: 1
-    maxDerivative: 1
-    maxTotalOutput: 1
+    proportionalGain: 0.44
+    integralGain: 0.03
+    derivativeGain: 0.05
+    maxProportional: 0.34
+    maxIntegral: 0.2
+    maxDerivative: 0.56
+    maxTotalOutput: 0.3
   yawPID:
-    proportionalGain: 1
-    integralGain: 1
-    derivativeGain: 1
+    proportionalGain: 0.76
+    integralGain: 0.31
+    derivativeGain: 0.04
     maxProportional: 1
     maxIntegral: 1
     maxDerivative: 1
-    maxTotalOutput: 1
+    maxTotalOutput: 0.56
   missileController: {fileID: 6214539557847636511}
   target: {fileID: 0}
   rb: {fileID: -5703037839560383523}
@@ -816,13 +816,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8416439272419403160}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.20204052, y: -0, z: -0, w: 0.9793772}
-  m_LocalPosition: {x: 0, y: 0.807, z: -1.75}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.455, z: -0.991}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7069808030633185512}
-  m_LocalEulerAnglesHint: {x: 23.313, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &324188577662554809
 Camera:
   m_ObjectHideFlags: 0

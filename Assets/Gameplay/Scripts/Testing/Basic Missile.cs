@@ -64,28 +64,22 @@ public class BasicMissile : MonoBehaviour
 
     Vector3 AccelerationCommand()
     {
-        Vector3 currentPosition = transform.position;
-        Vector3 targetPosition = target.transform.position + targetVelocity;
+        Vector3 currentPosition = transform.position + targetVelocity;
+        targetPosition = target.transform.position;
 
-     
-        Vector3 lineOfSightVector = targetPosition - currentPosition;
-        float range = lineOfSightVector.magnitude;
-        Vector3 losNormalized = lineOfSightVector.normalized;
+        Vector3 lineOfSight = targetPosition - currentPosition;
+
+        Vector3 relativeVelocity = targetVelocity - rb.linearVelocity;
+
+        Vector3 losRate = Vector3.Cross(relativeVelocity, lineOfSight.normalized);
+
+        float closingVelocity = Vector3.Dot(losRate, relativeVelocity) / lineOfSight.magnitude;
 
 
-        Vector3 relativeVelocity = (target.GetComponent<Rigidbody>()?.linearVelocity ?? Vector3.zero) - rb.linearVelocity;
+        return navConstant * (closingVelocity) * losRate.normalized;
 
-    
-        Vector3 losRate = Vector3.Cross(losNormalized, relativeVelocity) / range;
 
-   
-        float closingVelocity = -Vector3.Dot(relativeVelocity, losNormalized);
 
-       
-        return  closingVelocity * losRate * navConstant * AccelerationBias();
-
-       
-    
     }
     float AccelerationBias()
     {

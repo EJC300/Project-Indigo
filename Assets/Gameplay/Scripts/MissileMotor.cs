@@ -52,10 +52,10 @@ namespace Gameplay {
 
             float thrust = CalculateDeltaV();
          
-            Vector3 deltaVAcceleration = Vector3.forward * thrust;
+            Vector3 deltaVAcceleration = Vector3.forward * thrust * fuelMassInKg;
     
        
-            rb.AddRelativeForce(deltaVAcceleration,ForceMode.Impulse);
+            rb.AddRelativeForce(deltaVAcceleration,ForceMode.Force);
         }
 
     }

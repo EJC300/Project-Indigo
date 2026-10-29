@@ -34,7 +34,7 @@ namespace GameInfrastructure
                 {
                     if (!paused)
                     {
-                        Debug.Log(i);
+                    
                         updatables[i].CustomFixedUpdate();
                     }
                 }

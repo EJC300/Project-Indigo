@@ -3,6 +3,7 @@ using Aircraft;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using TMPro;
+using Gameplay;
 namespace GameUI
 {
 
@@ -17,7 +18,14 @@ namespace GameUI
         [SerializeField] private float pixelsPerDegreesCompass;
 
         [SerializeField] private float halfHeightCompass;
+        
+        
+        [SerializeField] private PlaneController plane;
 
+
+        [SerializeField] private TMP_Text speedIndicator;
+        [SerializeField] private TMP_Text aoaIndicator;
+        [SerializeField] private TMP_Text gForceIndicator;
 
         [SerializeField] private int maxDegreesPitchLadder;
 
@@ -93,13 +101,18 @@ namespace GameUI
         private void Update()
         {
             RunHUD();
+           
         }
         void RunHUD()
         {
-            PitchLadderHorizonMarker();
-            PitchLadder();
-            FlightPathMarker();
-            BoreSightMarker();
+            if (GameController.gameController.alive)
+            {
+                PitchLadderHorizonMarker();
+                PitchLadder();
+                FlightPathMarker();
+                BoreSightMarker();
+                Indicators();
+            }
         }
 
 
@@ -111,153 +124,26 @@ namespace GameUI
         }
         void SetupCompass()
         {
-            Camera camera = Camera.main;
+        }
 
-            int step = degreesCompassPixelsPerStep;
-
-            for(int deg = -maxDegreesCompassLadder; deg < maxDegreesCompassLadder;deg += step)
+        void Indicators()
+        {
+            speedIndicator.text = $" SPD   {Mathf.RoundToInt(body.GetLinearVelocity().z * 3.6f).ToString()}/Kmh";
+            aoaIndicator.text = $" AOA   {Mathf.Round(body.GetAngleOfAttack())}";
+            gForceIndicator.text = $"G   ~{Mathf.Round(plane.GetGforce() * 1000) / 1000}";
+            float redWarning = Mathf.InverseLerp(0, plane.GetMaxAOA, body.GetAngleOfAttack() * Mathf.Rad2Deg);
+            Color aoaColor = aoaIndicator.color;
+            Color green = Color.green;
+            if (body.GetAngleOfAttack() > 0.0f)
             {
-             
-          
-
-                if(deg == 90)
-                {
-                    RectTransform compassMarkerSpawn = Instantiate(compassMarker, compassRoot, false);
-                    CompassPoint compassPoint = new CompassPoint();
-                    GameObject compassDegreeText = Instantiate(degreeText, compassMarkerSpawn, false);
-                    TextMeshProUGUI degree = compassDegreeText.GetComponent<TextMeshProUGUI>();
-                    degree.rectTransform.anchoredPosition = Vector3.zero;
-                    compassMarkerSpawn.anchoredPosition = new Vector2(deg * 40, 0);
-                    degree.text = "E";
-                    degree.alignment = TextAlignmentOptions.Center;
-                    compassPoint.text = degree.text;
-                    compassPoint.degree = deg;
-                    compassPoint.pickleMark = compassMarkerSpawn;
-                }
-
-                else if( deg == 270)
-                {
-                    RectTransform compassMarkerSpawn = Instantiate(compassMarker, compassRoot, false);
-                    CompassPoint compassPoint = new CompassPoint();
-                    GameObject compassDegreeText = Instantiate(degreeText, compassMarkerSpawn, false);
-                    TextMeshProUGUI degree = compassDegreeText.GetComponent<TextMeshProUGUI>();
-                    compassMarkerSpawn.anchoredPosition = new Vector2(deg * 40, 0);
-                    degree.rectTransform.anchoredPosition = Vector3.zero;
-                    degree.text = "W";
-                    compassPoint.text = degree.text;
-                    compassPoint.degree = deg;
-                    degree.alignment = TextAlignmentOptions.Center;
-                    compassPoint.pickleMark = compassMarkerSpawn;
-                }
-
-                else if (deg == 180)
-                {
-                    RectTransform compassMarkerSpawn = Instantiate(compassMarker, compassRoot, false);
-                    CompassPoint compassPoint = new CompassPoint();
-                    GameObject compassDegreeText = Instantiate(degreeText, compassMarkerSpawn, false);
-                    TextMeshProUGUI degree = compassDegreeText.GetComponent<TextMeshProUGUI>();
-                    compassMarkerSpawn.anchoredPosition = new Vector2(deg * 40f, 0);
-                    degree.rectTransform.anchoredPosition = Vector3.zero;
-                    degree.text = "S";
-                    degree.alignment = TextAlignmentOptions.Center;
-                    compassPoint.degree = deg;
-                    compassPoint.text = degree.text;
-                    compassPoint.pickleMark = compassMarkerSpawn;
-                }
-
-                else if (deg == 0)
-                {
-                    RectTransform compassMarkerSpawn = Instantiate(compassMarker, compassRoot, false);
-                    CompassPoint compassPoint = new CompassPoint();
-                    GameObject compassDegreeText = Instantiate(degreeText, compassMarkerSpawn, false);
-                    TextMeshProUGUI degree = compassDegreeText.GetComponent<TextMeshProUGUI>();
-                    compassMarkerSpawn.anchoredPosition = new Vector2(deg * 40f, 0);
-                    degree.rectTransform.anchoredPosition = Vector3.zero;
-                    degree.text = "N";
-                    degree.alignment = TextAlignmentOptions.Center;
-                    compassPoint.degree = deg;
-                    compassPoint.text = degree.text;
-                    compassPoint.pickleMark = compassMarkerSpawn;
-                }
-                else if (deg == 315)
-                {
-                    RectTransform compassMarkerSpawn = Instantiate(compassMarker, compassRoot, false);
-                    CompassPoint compassPoint = new CompassPoint();
-                    GameObject compassDegreeText = Instantiate(degreeText, compassMarkerSpawn, false);
-                    TextMeshProUGUI degree = compassDegreeText.GetComponent<TextMeshProUGUI>();
-                    compassMarkerSpawn.anchoredPosition = new Vector2(deg * 40f, 0);
-                    degree.rectTransform.anchoredPosition = Vector3.zero;
-                    degree.text = "NW";
-                    degree.alignment = TextAlignmentOptions.Center;
-                    compassPoint.degree = deg;
-                    compassPoint.text = degree.text;
-                    compassPoint.pickleMark = compassMarkerSpawn;
-                }
-
-                else if (deg == 225)
-                {
-                    RectTransform compassMarkerSpawn = Instantiate(compassMarker, compassRoot, false);
-                    CompassPoint compassPoint = new CompassPoint();
-                    GameObject compassDegreeText = Instantiate(degreeText, compassMarkerSpawn, false);
-                    TextMeshProUGUI degree = compassDegreeText.GetComponent<TextMeshProUGUI>();
-                    compassMarkerSpawn.anchoredPosition = new Vector2(deg * 40f, 0);
-                    degree.rectTransform.anchoredPosition = Vector3.zero;
-                    degree.text = "SW";
-                    compassPoint.degree = deg;
-                    degree.alignment = TextAlignmentOptions.Center;
-                    compassPoint.text = degree.text;
-                    compassPoint.pickleMark = compassMarkerSpawn;
-                }
-                else if (deg == 135)
-                {
-                    RectTransform compassMarkerSpawn = Instantiate(compassMarker, compassRoot, false);
-                    CompassPoint compassPoint = new CompassPoint();
-                    GameObject compassDegreeText = Instantiate(degreeText, compassMarkerSpawn, false);
-                    TextMeshProUGUI degree = compassDegreeText.GetComponent<TextMeshProUGUI>();
-                    compassMarkerSpawn.anchoredPosition = new Vector2(deg * 40f, 0);
-                    degree.rectTransform.anchoredPosition = Vector3.zero;
-                    compassPoint.degree = deg;
-                    degree.text = "SE";
-                    degree.alignment= TextAlignmentOptions.Center;
-              
-                    compassPoint.text = degree.text;
-                    compassPoint.pickleMark = compassMarkerSpawn;
-                }
-                else if (deg == 45)
-                {
-                    RectTransform compassMarkerSpawn = Instantiate(compassMarker, compassRoot, false);
-                    CompassPoint compassPoint = new CompassPoint();
-                    GameObject compassDegreeText = Instantiate(degreeText, compassMarkerSpawn, false);
-                    TextMeshProUGUI degree = compassDegreeText.GetComponent<TextMeshProUGUI>();
-                    compassMarkerSpawn.anchoredPosition = new Vector2(deg * 40f, 0);
-                    degree.rectTransform.anchoredPosition = Vector3.zero;
-                    compassPoint.degree = deg;
-                    degree.text = "NE";
-                    degree.alignment = TextAlignmentOptions.Center;
-                    compassPoint.text = degree.text;
-                    compassPoint.pickleMark = compassMarkerSpawn;
-                }
-                else
-                {
-                    RectTransform compassMarkerSpawn = Instantiate(compassMarker, compassRoot, false);
-                    CompassPoint compassPoint = new CompassPoint();
-                    GameObject compassDegreeText = Instantiate(degreeText, compassMarkerSpawn, false);
-                    TextMeshProUGUI degree = compassDegreeText.GetComponent<TextMeshProUGUI>();
-                    compassMarkerSpawn.anchoredPosition = new Vector2(deg * 40f, 0);
-                    degree.rectTransform.anchoredPosition = Vector3.zero;
-                    degree.text = Mathf.Abs(deg).ToString();
-                    compassPoint.degree = deg;
-                    degree.alignment = TextAlignmentOptions.Center;
-                    compassPoint.text = degree.text;
-                    compassPoint.pickleMark = compassMarkerSpawn;
-                }
-         
-
-               
-
-
+                aoaColor.r = Mathf.Lerp(aoaColor.r, 1, redWarning);
+            }
+            else
+            {
+                aoaColor = green;
             }
         }
+
         void SetupPitchLadder()
         {
             Camera camera = Camera.main;
@@ -295,22 +181,7 @@ namespace GameUI
 
         void Compass()
         {
-            Camera camera = Camera.main;
-            float directionAngle = body.transform.forward.x;
-
-            float angle = Mathf.Asin(Mathf.Clamp( directionAngle,-1,1)) * Mathf.Rad2Deg;
-            foreach (CompassPoint compassPoint in compassPoints)
-            {
-
-                float x = (compassPoint.degree - directionAngle) * pixelsPerDegreesPitch;
-
-                
-
-
-
-
-
-            }
+         
         }
         
         void PitchLadder()

@@ -15,7 +15,7 @@ namespace Aircraft
             float milThrustAmount = planeController.MilThrustAmount();
             float afterburnerThrust = planeController.FullAfterBurnerAmount();
             float throttleAfterBurner = Mathf.InverseLerp(milThrustAmount, afterburnerThrust, planeController.GetThrust());
-            Debug.Log(throttleAfterBurner);
+     
             float afterBurnerScale = throttleAfterBurner;
             afterBurnerMeshScaler.transform.localScale = new Vector3(afterBurnerMeshScaler.transform.localScale.x, afterBurnerMeshScaler.transform.localScale.y, afterBurnerScale);
         }

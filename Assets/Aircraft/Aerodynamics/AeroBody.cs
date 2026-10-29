@@ -9,7 +9,7 @@ namespace Aircraft
     {
 
 
-
+        [SerializeField] private bool startAirborne;
 
 
         /*
@@ -166,10 +166,15 @@ namespace Aircraft
                 rb = GetComponent<Rigidbody>();
                 RB = rb;
             }
-         
+            if (startAirborne)
+            {
+                rb.linearVelocity = transform.forward * 220;
+                rb.transform.Translate(Vector3.up * 100);
+            }
         }
         private void FixedUpdate()
         {
+           
             if (testing)
             {
                 UpdateState();

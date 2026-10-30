@@ -60,7 +60,7 @@ namespace Gameplay
         {
             Vector3 toTarget = target.transform.position - rb.position;
             Vector3 velocity = transform.InverseTransformDirection  ( toTarget.normalized + AccelerationCommand());
-            direction = velocity.normalized;
+            direction = rb.linearVelocity + velocity.normalized;
            
 
         }
@@ -80,19 +80,25 @@ namespace Gameplay
             Vector3 currentPosition = transform.position;
             targetPosition = target.transform.position;
 
-            Vector3 lineOfSight = targetPosition - currentPosition;
+            Vector3 relativePosition = targetPosition - transform.position;
 
-            Vector3 relativeVelocity = targetVelocity - rb.linearVelocity;
+            Vector3 relativeVelocity = targetVelocity - (rb.linearVelocity);
 
-            Vector3 losRate = Vector3.Cross(relativeVelocity, lineOfSight.normalized);
+            float timeUntilImpact = (relativeVelocity.magnitude / targetVelocity.magnitude);
 
-            float closingVelocity = Vector3.Dot(losRate, relativeVelocity) / lineOfSight.magnitude;
+            Vector3 zeroEffortMiss = relativePosition + relativeVelocity * timeUntilImpact;
 
-            Vector3 losDiff = previousLos - losRate;
-            float closingVelocityDiff = prevClosingVelocity - closingVelocity;
-            previousLos = losRate;
-            prevClosingVelocity = closingVelocity;
-            return navConstant * (-closingVelocityDiff + (navConstant * 0.5f )*9.81f) * losDiff;
+            Vector3 unitLOS = relativePosition.normalized;
+
+            Vector3 zeroEffortMissLOS = Vector3.Project(zeroEffortMiss, unitLOS);
+
+            Vector3 zeroEffortNormal = zeroEffortMiss - zeroEffortMissLOS;
+
+            Vector3 acceleration = navConstant * zeroEffortNormal / (timeUntilImpact * timeUntilImpact);
+        
+         
+            return acceleration;
+            
 
 
 

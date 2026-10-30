@@ -3,16 +3,21 @@ namespace Gameplay
 {
     public class MissileLauncher : MonoBehaviour
     {
+
+        public bool fire;
+        [SerializeField] private GameObject particleSmoke;
         [SerializeField] private float launchSpeed;
         [SerializeField] private Transform missilePoint;
         [SerializeField] private GameObject missilePrefab;
         public Rigidbody target;
-        public bool Fire;
+         
+      
+
         private Vector3 CalculateLaunchVelocity()
         {
             Vector3 launchPoint = transform.InverseTransformPoint(missilePoint.position);
 
-            Vector3 launchDirection = launchPoint + missilePoint.up;
+            Vector3 launchDirection =- missilePoint.up;
 
             Vector3 launchForce =  launchDirection.normalized * launchSpeed;
 
@@ -25,18 +30,25 @@ namespace Gameplay
             Vector3 launchVelocity = CalculateLaunchVelocity();
             GameObject missileInstance = GameObject.Instantiate(missilePrefab,missilePoint.position,missilePoint.localRotation);
             Rigidbody missileRB = missileInstance.GetComponent<Rigidbody>();
-            MissileGuidance missileGuidance = missileInstance.GetComponent<MissileGuidance>();
+            BasicMissile missileGuidance = missileInstance.GetComponent<BasicMissile>();
             missileGuidance.target = target.gameObject;
             missileRB.AddRelativeForce(launchVelocity,ForceMode.Impulse);
+            Instantiate(particleSmoke, missilePoint, false);
+            
+            
+        }
 
+        private void Update()
+        {
+          
         }
 
         private void FixedUpdate()
         {
             //Testing 
-            if (Fire)
+            if (fire)
             {
-                Fire = false;
+                fire = false;
                 FireMissile();
             }
         }

@@ -10,6 +10,10 @@ public class BasicMissile : MonoBehaviour
      * 
      */
     public GameObject target;
+
+    [SerializeField] private float seekerActivationTime;
+
+    [SerializeField] private float burnTime;
     [SerializeField] private float navConstant = 3.0f;
 
     [SerializeField] private float missileSpeed;
@@ -28,24 +32,58 @@ public class BasicMissile : MonoBehaviour
 
     [SerializeField] private Vector3 targetAcceleration;
 
-    private Vector3 previousTargetAcceleration;
+    private float burnSeconds;
+    private float seekerSeconds;
+
     private Vector3 relativeVelocity;
+    private Vector3 velocity;
     private void Update()
     {
        targetPosition = target.transform.position;
     }
+    private void Start()
+    {
+        seekerSeconds = seekerActivationTime;
+        burnSeconds = burnTime;
+    }
     private void FixedUpdate()
     {
+        
+
         TargetAcceleration();
         RelativeVelocity();
         Debug.Log((AccelerationCommand() - transform.position).normalized);
-       // rb.AddRelativeForce(Vector3.forward * missileSpeed, ForceMode.Acceleration);
-        Vector3 toTarget = target.transform.position - rb.position;
-        Vector3 velocity = (AccelerationCommand());
-        Vector3 direction = toTarget.normalized + velocity;
-        Debug.Log(direction.normalized * missileTurnRate);
-        transform.rotation = Quaternion.LookRotation(direction.normalized  * missileTurnRate);
-        previousTargetPosition = targetPosition;
+        ThrustBurn();
+        Seek();
+    }
+
+
+    void Seek()
+    {
+        if(seekerSeconds < 0 && velocity.magnitude > 0)
+        {
+            Vector3 toTarget = target.transform.position - rb.position;
+            Vector3 velocity = (AccelerationCommand());
+            Vector3 direction = toTarget.normalized + velocity;
+            Debug.Log(direction.normalized * missileTurnRate);
+            rb.MoveRotation(Quaternion.Slerp(rb.rotation, Quaternion.LookRotation(direction.normalized * missileTurnRate * Time.fixedDeltaTime),Time.fixedDeltaTime * 2/velocity.normalized.magnitude));
+            previousTargetPosition = targetPosition;
+            Debug.Log(rb.linearVelocity.magnitude);
+        }
+        else if (seekerSeconds > 0)
+        {
+            seekerSeconds -= Time.fixedDeltaTime;
+        }
+    }
+
+    void ThrustBurn()
+    {
+        velocity = rb.linearVelocity;
+        if (burnSeconds > 0)
+        {
+            burnSeconds -= Time.fixedDeltaTime;
+            rb.AddRelativeForce(Vector3.forward * missileSpeed, ForceMode.Force);
+        }
     }
     void TargetAcceleration()
     {
@@ -64,19 +102,27 @@ public class BasicMissile : MonoBehaviour
 
     Vector3 AccelerationCommand()
     {
-        Vector3 currentPosition = transform.position + targetVelocity;
-        targetPosition = target.transform.position;
+        Vector3 currentPosition = transform.position;
+        targetPosition = target.transform.position + targetVelocity;
 
-        Vector3 lineOfSight = targetPosition - currentPosition;
+        Vector3 relativePosition = targetPosition - transform.position;
 
-        Vector3 relativeVelocity = targetVelocity - rb.linearVelocity;
+        Vector3 relativeVelocity = targetVelocity - (rb.linearVelocity);
 
-        Vector3 losRate = Vector3.Cross(relativeVelocity, lineOfSight.normalized);
+        float timeUntilImpact = (relativeVelocity.magnitude / targetVelocity.magnitude);
 
-        float closingVelocity = Vector3.Dot(losRate, relativeVelocity) / lineOfSight.magnitude;
+        Vector3 zeroEffortMiss = relativePosition + relativeVelocity * timeUntilImpact;
+
+        Vector3 unitLOS = relativePosition.normalized;
+
+        Vector3 zeroEffortMissLOS = Vector3.Project(zeroEffortMiss, unitLOS);
+
+        Vector3 zeroEffortNormal = zeroEffortMiss - zeroEffortMissLOS;
+
+        Vector3 acceleration = navConstant * zeroEffortNormal / (timeUntilImpact * timeUntilImpact + AccelerationBias());
 
 
-        return navConstant * (closingVelocity) * losRate.normalized;
+        return acceleration;
 
 
 

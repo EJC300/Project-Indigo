@@ -11,6 +11,6 @@ public class Mover : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.Translate(Vector3.right * 225 * Time.deltaTime + Vector3.up * 5 * Time.deltaTime + Vector3. forward * 5 * Time.deltaTime);
+        transform.Translate(Vector3.right * 22 * Time.deltaTime + Vector3.up * 5 * Time.deltaTime + Vector3. forward * 5 * Time.deltaTime);
     }
 }

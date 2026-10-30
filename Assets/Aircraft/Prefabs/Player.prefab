@@ -45,8 +45,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player.PlayerInputFlightController
   inputAsset: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  pauseWindow: {fileID: 0}
   aircraftController: {fileID: 0}
+  thirdPersonCamera: {fileID: 0}
+  lookName: 
   pitchName: Pitch
   yawName: Yaw
   rollName: Roll
   throttleName: Throttle
+  lookAction:
+    m_Name: Look
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: eca995f7-683d-491f-8874-3f2cdb9996b1
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0

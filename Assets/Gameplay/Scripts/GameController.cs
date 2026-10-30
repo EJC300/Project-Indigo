@@ -14,7 +14,7 @@ namespace Gameplay
         bool lose;
         bool win;
         public bool alive;
-
+        private bool close;
         private void Start()
         {
             gameController = this;
@@ -25,10 +25,12 @@ namespace Gameplay
         {
             alive = player != null;
 
-
-            if(lose || win || !alive)
+            close = lose || win || !alive;
+            if (close)
             {
+                close = false;
                 pauseMenuController.OnOpenPauseWindow();
+               
             }
            
         }

@@ -149,7 +149,7 @@ Transform:
   m_GameObject: {fileID: 77025371}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 15202, y: 3707, z: 6165}
+  m_LocalPosition: {x: 16571, y: 3707, z: 6165}
   m_LocalScale: {x: 61.896866, y: 61.896866, z: 61.896866}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -168,6 +168,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Gameplay.Waypoint
   terrain: {fileID: 151151193390709803}
+  endMission: 1
+  pauseMenuController: {fileID: 957817411}
   tracker: {fileID: 1119327512}
 --- !u!33 &77025374
 MeshFilter:
@@ -245,7 +247,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 13.32
+  m_Radius: 32.53
   m_Center: {x: 0, y: -0.0000019073486, z: 0}
 --- !u!54 &77025377
 Rigidbody:
@@ -1444,6 +1446,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Gameplay.Waypoint
   terrain: {fileID: 151151193390709803}
+  endMission: 0
+  pauseMenuController: {fileID: 0}
   tracker: {fileID: 1119327512}
 --- !u!33 &835355616
 MeshFilter:
@@ -1937,6 +1941,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Gameplay.Waypoint
   terrain: {fileID: 151151193390709803}
+  endMission: 0
+  pauseMenuController: {fileID: 0}
   tracker: {fileID: 1119327512}
 --- !u!33 &1139841834
 MeshFilter:
@@ -2437,6 +2443,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Gameplay.Waypoint
   terrain: {fileID: 151151193390709803}
+  endMission: 0
+  pauseMenuController: {fileID: 0}
   tracker: {fileID: 1119327512}
 --- !u!33 &1358293532
 MeshFilter:
@@ -2649,6 +2657,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Gameplay.Waypoint
   terrain: {fileID: 151151193390709803}
+  endMission: 0
+  pauseMenuController: {fileID: 0}
   tracker: {fileID: 1119327512}
 --- !u!135 &1376998619
 SphereCollider:

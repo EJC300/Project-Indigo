@@ -10,14 +10,15 @@ namespace Gameplay
         [SerializeField] private Transform missilePoint;
         [SerializeField] private GameObject missilePrefab;
         public Rigidbody target;
-         
+        public SAMHub hub;
+
       
 
         private Vector3 CalculateLaunchVelocity()
         {
             Vector3 launchPoint = transform.InverseTransformPoint(missilePoint.position);
 
-            Vector3 launchDirection =- missilePoint.up;
+            Vector3 launchDirection = -missilePoint.up;
 
             Vector3 launchForce =  launchDirection.normalized * launchSpeed;
 
@@ -25,7 +26,7 @@ namespace Gameplay
         }
 
 
-        void FireMissile()
+        public void FireMissile()
         {
             Vector3 launchVelocity = CalculateLaunchVelocity();
             GameObject missileInstance = GameObject.Instantiate(missilePrefab,missilePoint.position,missilePoint.localRotation);
@@ -37,7 +38,11 @@ namespace Gameplay
             
             
         }
-
+        private void Start()
+        {
+            hub = GameObject.FindAnyObjectByType<SAMHub>();
+            hub.AddMissileLauncher(this);
+        }
         private void Update()
         {
           
@@ -45,12 +50,8 @@ namespace Gameplay
 
         private void FixedUpdate()
         {
-            //Testing 
-            if (fire)
-            {
-                fire = false;
-                FireMissile();
-            }
+           
+         
         }
 
     }

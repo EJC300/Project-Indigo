@@ -6,6 +6,8 @@ namespace GameInfrastructure
     {
         [SerializeField] private Transform playerCamera;
         [SerializeField] private float limit;
+        [SerializeField] private float maxSpeed;
+        public float Limit { get { return limit; } } 
         public static OriginShift instance;
         private List<Transform> targets = new List<Transform>();
         private float distance;
@@ -35,7 +37,7 @@ namespace GameInfrastructure
         {
             targets?.Remove(trn);
         }
-
+      
         void RunShifter()
         {
            
@@ -44,12 +46,16 @@ namespace GameInfrastructure
                 if (targets[i] != null)
                 {
                     GameObject targetToShift = targets[i].gameObject;
+
                     ShiftOriginObject(targetToShift.transform);
                     Rigidbody rigidBody = targetToShift.GetComponentInChildren<Rigidbody>();
+                    Collider collider = rigidBody.GetComponentInChildren<Collider>();
                     if (rigidBody != null)
                     {
-
-
+                        rigidBody.maxLinearVelocity = maxSpeed;
+                        rigidBody.maxAngularVelocity = maxSpeed;
+                     
+                  
                         rigidBody.MovePosition(ShiftOriginObject(rigidBody.transform.position));
                     }
 

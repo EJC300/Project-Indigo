@@ -28,7 +28,7 @@ namespace Aircraft
         private Vector3 localVelocity;
         private Vector3 localAngularVelocity;
         private Vector3 speed;
-       public Vector3 prevVelocity;
+        public Vector3 prevVelocity;
         //Lift 
         [SerializeField] private float wingArea;
         [SerializeField] private float wingAreaYaw;
@@ -63,11 +63,12 @@ namespace Aircraft
 
         private void OnEnable()
         {
-          
+
         }
         private void OnDisable()
         {
-            if (!testing)
+            // FIX: GameFlow.instance can already be destroyed on scene unload / quit -> NullReferenceException
+            if (!testing && GameFlow.instance != null)
             {
                 GameFlow.instance.RemoveUpdatable(this);
             }
@@ -84,9 +85,13 @@ namespace Aircraft
         {
             Vector3 dragForce = Vector3.zero;
 
-            dragForce.x = localVelocity.x * -dragLeftCoefficient;
-            dragForce.y = localVelocity.y * -dragUpCoefficient;
-            dragForce.z = localVelocity.z * -dragForwardCoefficient;
+            // FIX: pressure already contains v^2. Multiplying it by the raw velocity components made
+            // drag scale with v^3. Using the velocity *direction* gives the intended v^2 drag.
+            Vector3 velocityDirection = localVelocity.normalized;
+
+            dragForce.x = velocityDirection.x * -dragLeftCoefficient;
+            dragForce.y = velocityDirection.y * -dragUpCoefficient;
+            dragForce.z = velocityDirection.z * -dragForwardCoefficient;
 
             dragForce *= pressure;
             dragForce = transform.TransformDirection(dragForce);
@@ -99,25 +104,49 @@ namespace Aircraft
 
             angleOfAttackYaw = Mathf.Atan2(localVelocity.x, localVelocity.z) * Mathf.Rad2Deg;
 
-            coefficientOfLift = MathUtilities.UnclampedInverseLerp(-maxAngleAttack, maxAngleAttack, angleOfAttack) * liftCoefficient;
-            coefficientOfLiftYaw = MathUtilities.UnclampedInverseLerp(-maxAngleAttack, maxAngleAttack, angleOfAttackYaw) * liftCoefficientYaw;
+            // FIX: InverseLerp returns 0..1, so zero AoA produced half the lift coefficient.
+            // Remapping to -1..1 makes zero AoA = zero lift and keeps the sign for negative AoA.
+            // FIX: yaw used maxAngleAttack instead of maxAngleAttackYaw.
+            // Guard against a max angle of 0 (inspector default) which would divide by zero.
+            float maxAoA = Mathf.Max(0.01f, maxAngleAttack);
+            float maxAoAYaw = Mathf.Max(0.01f, maxAngleAttackYaw);
+
+            coefficientOfLift = (MathUtilities.UnclampedInverseLerp(-maxAoA, maxAoA, angleOfAttack) * 2f - 1f) * liftCoefficient;
+            coefficientOfLiftYaw = (MathUtilities.UnclampedInverseLerp(-maxAoAYaw, maxAoAYaw, angleOfAttackYaw) * 2f - 1f) * liftCoefficientYaw;
 
             Vector3 relativeWind = localVelocity.z * Vector3.up;
             Vector3 relativeWindYaw = localVelocity.z * Vector3.right;
 
             pressure = rho * rb.linearVelocity.sqrMagnitude;
 
+            // FIX: lift is linear in CL (L = 0.5 * rho * v^2 * S * CL). It was squared, which threw away
+            // the sign so negative AoA produced positive lift. The square belongs in induced drag only.
+            Vector3 liftForce = relativeWind.normalized * pressure * 0.5f * coefficientOfLift * wingArea;
 
+            // FIX: yaw force was using the pitch CL and pitch wing area.
+            // FIX: negated so the side force opposes sideslip (positive local X velocity -> push toward -X).
+            //      Without this the yaw surface was destabilising.
+            Vector3 liftForceYaw = -relativeWindYaw.normalized * pressure * 0.5f * coefficientOfLiftYaw * wingAreaYaw;
 
-            Vector3 liftForce = relativeWind.normalized * pressure * 0.5f * (coefficientOfLift * coefficientOfLift) * wingArea;
+            // FIX: yaw lift was computed but never added to the total.
+            Vector3 liftTotalForce = liftForce + liftForceYaw;
 
-            Vector3 liftForceYaw = relativeWindYaw.normalized * pressure * (0.5f * (coefficientOfLift * coefficientOfLift)) * wingArea;
+            // FIX: operator precedence. CL^2 / PI * AR * e  ->  CL^2 / (PI * AR * e).
+            // Guarded against AR or e being 0 which would give Infinity/NaN and poison the rigidbody.
+            float inducedDragDenominator = Mathf.Max(Mathf.PI * aspectRatio * efficiencyFactor, 0.0001f);
+            float inducedDragCoefficient = (coefficientOfLift * coefficientOfLift) / inducedDragDenominator;
+            float inducedDragCoefficientYaw = (coefficientOfLiftYaw * coefficientOfLiftYaw) / inducedDragDenominator;
 
-            Vector3 liftTotalForce = (liftForce);
+            // FIX: everything here is in LOCAL space (it gets TransformDirection'd below), but the old code
+            // used transform.forward / transform.right (world space), so the vector got rotated twice.
+            // FIX: induced drag always opposes forward motion. The yaw version pointed along the right axis
+            // and reused the pitch coefficient.
+            Vector3 inducedDragDirection = -(localVelocity.z * Vector3.forward).normalized;
 
-            float inducedDragCoefficient = (coefficientOfLift * coefficientOfLift) / Mathf.PI * aspectRatio * efficiencyFactor;
-            Vector3 inducedDragForce = -(localVelocity.z * transform.forward).normalized * inducedDragCoefficient;
-            Vector3 inducedDragForceYaw = -(localVelocity.z * transform.right).normalized * inducedDragCoefficient;
+            // FIX: a coefficient is not a force. Scale by dynamic pressure and wing area like the lift terms.
+            Vector3 inducedDragForce = inducedDragDirection * pressure * 0.5f * wingArea * inducedDragCoefficient;
+            Vector3 inducedDragForceYaw = inducedDragDirection * pressure * 0.5f * wingAreaYaw * inducedDragCoefficientYaw;
+
             Vector3 totalForce = (liftTotalForce + inducedDragForce + inducedDragForceYaw);
             totalForce = transform.TransformDirection(totalForce);
             rb.AddForce(totalForce, ForceMode.Force);
@@ -126,9 +155,11 @@ namespace Aircraft
         }
         void CalculateStall()
         {
-            float coef = (rho * wingArea) * coefficientOfLift;
-         
-            if (Mathf.Abs(coef) > 0.5)
+            // FIX: negative CL made coef negative -> Mathf.Sqrt(negative) = NaN, which then leaked out of the
+            // getters (Mathf.Max(1, NaN) returns NaN).
+            float coef = Mathf.Abs((rho * wingArea) * coefficientOfLift);
+
+            if (coef > 0.5f)
             {
                 maxStallSpeed = Mathf.Sqrt((2 * rb.mass) / coef);
 
@@ -142,23 +173,15 @@ namespace Aircraft
             if (!setActive)
             {
 
-
-
-                
                 activate = true;
-          
+
             }
-     
-          
-
-         
-
 
         }
 
         //Return angle of attack and pressure
 
-       
+
         public override void CustomStart()
         {
             if (!testing)
@@ -169,12 +192,14 @@ namespace Aircraft
             if (startAirborne)
             {
                 rb.linearVelocity = transform.forward * 220;
-                rb.transform.Translate(Vector3.up * 100);
+                // FIX: Translate defaults to Space.Self, so the 100m offset followed the object's rotation
+                // instead of going straight up.
+                rb.transform.Translate(Vector3.up * 100, Space.World);
             }
         }
         private void FixedUpdate()
         {
-           
+
             if (testing)
             {
                 UpdateState();
@@ -184,39 +209,34 @@ namespace Aircraft
         {
 
             if (!GameFlow.instance.paused && !testing)
-            {   
+            {
                 rb.isKinematic = false;
-              
-            
-
-           
-                
 
                 UpdateState();
-             
-            }
-           
 
+            }
 
         }
         public override void CustomLateUpdate()
         {
-            
+
         }
         public override void CustomUpdate()
         {
-           
 
         }
         public void Start()
         {
+            // FIX: grab the rigidbody BEFORE registering with GameFlow, otherwise CustomStart /
+            // CustomFixedUpdate can run with rb == null.
+            rb = GetComponent<Rigidbody>();
+            RB = rb;
+
             if (!testing)
             {
                 GameFlow.instance.AddUpdatable(this);
 
             }
-            rb = GetComponent<Rigidbody>();
-            RB = rb;
         }
 
         public float GetAngleOfAttack()
@@ -252,7 +272,7 @@ namespace Aircraft
         }
         public float GetMaxStallSpeed()
         {
-           
+
             return Mathf.Max(1, maxStallSpeed);
         }
     }

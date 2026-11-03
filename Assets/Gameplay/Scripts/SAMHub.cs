@@ -22,8 +22,11 @@ namespace Gameplay
         public SAMHub samHub;
         private void Update()
         {
-            CalculateDistances();
-            FireMissiles();
+            if (target != null)
+            {
+                CalculateDistances();
+                FireMissiles();
+            }
         }
         bool CanFire()
         {

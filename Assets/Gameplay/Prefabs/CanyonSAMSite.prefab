@@ -644,7 +644,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Gameplay.MissileLauncher
   fire: 0
   particleSmoke: {fileID: 9047065205046269331, guid: 3cc83edd1b3132c449b02e4395fb24a1, type: 3}
-  launchSpeed: 30000
+  launchSpeed: 3000
   missilePoint: {fileID: 3370787033154958272}
   missilePrefab: {fileID: 5559387351740360061, guid: 9a8f4ecbd810a9f4897faac6a4e8ed8b, type: 3}
   target: {fileID: 0}
@@ -881,7 +881,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Gameplay.MissileLauncher
   fire: 0
   particleSmoke: {fileID: 9047065205046269331, guid: 3cc83edd1b3132c449b02e4395fb24a1, type: 3}
-  launchSpeed: 30000
+  launchSpeed: 3000
   missilePoint: {fileID: 2283863774097698350}
   missilePrefab: {fileID: 5559387351740360061, guid: 9a8f4ecbd810a9f4897faac6a4e8ed8b, type: 3}
   target: {fileID: 0}
@@ -1571,7 +1571,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Gameplay.MissileLauncher
   fire: 0
   particleSmoke: {fileID: 9047065205046269331, guid: 3cc83edd1b3132c449b02e4395fb24a1, type: 3}
-  launchSpeed: 30000
+  launchSpeed: 3000
   missilePoint: {fileID: 4398201052728036656}
   missilePrefab: {fileID: 5559387351740360061, guid: 9a8f4ecbd810a9f4897faac6a4e8ed8b, type: 3}
   target: {fileID: 0}

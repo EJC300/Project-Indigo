@@ -449,17 +449,17 @@ MonoBehaviour:
   activate: 0
   RB: {fileID: -5703037839560383523}
   prevVelocity: {x: 0, y: 0, z: 0}
-  wingArea: 40
-  wingAreaYaw: 0
+  wingArea: 150
+  wingAreaYaw: 30
   liftCoefficient: 0.489
-  liftCoefficientYaw: 0
+  liftCoefficientYaw: 0.524
   rho: 1
   maxAngleAttack: 23
-  maxAngleAttackYaw: 0
+  maxAngleAttackYaw: 24
   aspectRatio: 0.583
-  efficiencyFactor: 0.375
-  dragUpCoefficient: 0.76
-  dragForwardCoefficient: 0.009
+  efficiencyFactor: 0.845
+  dragUpCoefficient: 0.387
+  dragForwardCoefficient: 0.149
   dragLeftCoefficient: 0.827
 --- !u!114 &4124530595494597217
 MonoBehaviour:
@@ -474,11 +474,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BasicMissile
   target: {fileID: 0}
-  seekerActivationTime: 1.2
-  burnTime: 3
+  seekerActivationTime: 0.8
+  burnTime: 6
   navConstant: 5
-  missileSpeed: 184420
-  missileTurnRate: 25
+  missileSpeed: 161036
+  missileTurnRate: 30
   rb: {fileID: -5703037839560383523}
 --- !u!114 &6993069378408743870
 MonoBehaviour:

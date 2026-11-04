@@ -61,6 +61,7 @@ namespace GameInfrastructure
             if(paused)
 
             {
+           
                 Physics.simulationMode = SimulationMode.Script;   
                 Physics2D.simulationMode = SimulationMode2D.Script;
             }
@@ -86,7 +87,8 @@ namespace GameInfrastructure
                         updatables[i].SetRigidbody(false);
                     }
                 }
-            
+            Cursor.visible = paused;
+
         }
 
         public void AddUpdatable(Updatable updatable)

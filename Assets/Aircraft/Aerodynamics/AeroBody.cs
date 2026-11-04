@@ -223,6 +223,12 @@ namespace Aircraft
                 GameFlow.instance.AddUpdatable(this);
 
             }
+            if (startAirborne)
+            {
+                rb.linearVelocity = transform.forward * 220;
+
+                rb.transform.Translate(Vector3.up * 100, Space.World);
+            }
         }
 
         public float GetAngleOfAttack()

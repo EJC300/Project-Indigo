@@ -17,7 +17,7 @@ namespace GameUI
         private readonly List<BasicMissile> sortBuffer = new List<BasicMissile>();
         private readonly List<MissileMarker> missileMarkers = new List<MissileMarker>();
 
-        // Number of markers currently being shown (recomputed every frame)
+     
         public int missileCount;
 
         private Comparison<BasicMissile> byDistanceToPlayer;
@@ -37,7 +37,7 @@ namespace GameUI
 
         private void Awake()
         {
-            // Cached once so sorting doesn't allocate every frame
+     
             byDistanceToPlayer = (a, b) =>
             {
                 Vector3 p = player.position;
@@ -61,14 +61,14 @@ namespace GameUI
 
         private void FixedUpdate()
         {
-            // Drop any missiles that were destroyed without deregistering
+    
             missileMarks.RemoveAll(m => m == null);
 
-            // Work on a copy so we never reorder the master list
+          
             sortBuffer.Clear();
             sortBuffer.AddRange(missileMarks);
 
-            // Only need to sort when there are more missiles than icons
+           
             if (sortBuffer.Count > missileMarkers.Count)
             {
                 sortBuffer.Sort(byDistanceToPlayer);

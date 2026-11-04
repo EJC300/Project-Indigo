@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using UnityEngine;
+using Utilities;
 namespace Gameplay
 {
     public class WaypointTrackerHUD : MonoBehaviour
@@ -74,7 +75,7 @@ namespace Gameplay
                 float distanceMultiplier = Mathf.InverseLerp(1000, 50, (point - transform.position).magnitude);
                 waypointHUD.transform.localScale = waypointHUD.transform.localScale.normalized * Mathf.Max(0.5f, distanceMultiplier) * 2;
 
-                Vector3 HUDPoint = WorldToScreenSpace(point);
+                Vector3 HUDPoint = MathHelpers.TransformToHUDSpace(point, Camera.main);
                 if (HUDPoint.z > 0)
                 {
                     HUDPoint.x = Mathf.Clamp(HUDPoint.x, -Screen.width / 4, Screen.width / 3);
@@ -89,11 +90,6 @@ namespace Gameplay
 
         }
     
-        private Vector3 WorldToScreenSpace(Vector3 point)
-        {
-            Vector3 screenPoint = Camera.main.WorldToScreenPoint(point);
-
-            return screenPoint - new Vector3(Camera.main.pixelWidth/2,Camera.main.pixelHeight/2);
-        }
+      
     }
 }

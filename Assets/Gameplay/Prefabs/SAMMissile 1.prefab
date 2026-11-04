@@ -478,7 +478,7 @@ MonoBehaviour:
   burnTime: 6
   navConstant: 5
   missileSpeed: 161036
-  missileTurnRate: 30
+  missileTurnRate: 5
   rb: {fileID: -5703037839560383523}
 --- !u!114 &6993069378408743870
 MonoBehaviour:

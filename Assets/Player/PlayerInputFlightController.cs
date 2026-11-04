@@ -1,5 +1,6 @@
 using Aircraft;
 using GameInfrastructure;
+using Gameplay;
 using UnityEngine;
 using UnityEngine.InputSystem;
 namespace Player
@@ -12,6 +13,8 @@ namespace Player
 
         public GameObject pauseWindow;
 
+        [SerializeField] private DemoBombLauncher demoBombLauncher;
+
         [SerializeField] private PlaneController aircraftController;
 
         [SerializeField] private ThirdPersonCamera thirdPersonCamera;
@@ -22,6 +25,7 @@ namespace Player
         [SerializeField] string rollName;
         [SerializeField] string throttleName;
         [SerializeField] InputAction lookAction;
+        InputAction bombLaunchAction;
         private InputAction pitchAction;
         private InputAction rollAction;
         private InputAction yawAction;
@@ -35,6 +39,7 @@ namespace Player
             yawAction = inputActions.FindAction(yawName);
             rollAction = inputActions.FindAction(rollName);
             throttleAction = inputActions.FindAction(throttleName);
+            bombLaunchAction = inputActions.FindAction(testBombLaunchName);
         }
 
         public void OnEnable()
@@ -79,6 +84,7 @@ namespace Player
                 RollInput();
                 PitchInput();
                 YawInput();
+                DropBombInput();
             }
         }
         
@@ -117,5 +123,11 @@ namespace Player
 
         }
 
+        void DropBombInput()
+        {
+            bool bombDrop = bombLaunchAction.ReadValue<float>() > 0.0f;
+            demoBombLauncher.DropBomb(bombDrop);
+
+        }
     }
 }

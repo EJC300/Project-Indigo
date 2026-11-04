@@ -1155,6 +1155,15 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""DropBomb"",
+                    ""type"": ""Button"",
+                    ""id"": ""4d309670-bf26-4ac9-a935-0cbab74444bf"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -1311,6 +1320,17 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""action"": ""Reset View"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b1fb3df5-3cbb-4904-b34e-653b67d9e119"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DropBomb"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -1410,6 +1430,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_FlightControls_Yaw = m_FlightControls.FindAction("Yaw", throwIfNotFound: true);
         m_FlightControls_Throttle = m_FlightControls.FindAction("Throttle", throwIfNotFound: true);
         m_FlightControls_ResetView = m_FlightControls.FindAction("Reset View", throwIfNotFound: true);
+        m_FlightControls_DropBomb = m_FlightControls.FindAction("DropBomb", throwIfNotFound: true);
     }
 
     ~@InputSystem_Actions()
@@ -1888,6 +1909,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     private readonly InputAction m_FlightControls_Yaw;
     private readonly InputAction m_FlightControls_Throttle;
     private readonly InputAction m_FlightControls_ResetView;
+    private readonly InputAction m_FlightControls_DropBomb;
     /// <summary>
     /// Provides access to input actions defined in input action map "FlightControls".
     /// </summary>
@@ -1923,6 +1945,10 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "FlightControls/ResetView".
         /// </summary>
         public InputAction @ResetView => m_Wrapper.m_FlightControls_ResetView;
+        /// <summary>
+        /// Provides access to the underlying input action "FlightControls/DropBomb".
+        /// </summary>
+        public InputAction @DropBomb => m_Wrapper.m_FlightControls_DropBomb;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1967,6 +1993,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @ResetView.started += instance.OnResetView;
             @ResetView.performed += instance.OnResetView;
             @ResetView.canceled += instance.OnResetView;
+            @DropBomb.started += instance.OnDropBomb;
+            @DropBomb.performed += instance.OnDropBomb;
+            @DropBomb.canceled += instance.OnDropBomb;
         }
 
         /// <summary>
@@ -1996,6 +2025,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @ResetView.started -= instance.OnResetView;
             @ResetView.performed -= instance.OnResetView;
             @ResetView.canceled -= instance.OnResetView;
+            @DropBomb.started -= instance.OnDropBomb;
+            @DropBomb.performed -= instance.OnDropBomb;
+            @DropBomb.canceled -= instance.OnDropBomb;
         }
 
         /// <summary>
@@ -2299,5 +2331,12 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnResetView(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "DropBomb" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnDropBomb(InputAction.CallbackContext context);
     }
 }

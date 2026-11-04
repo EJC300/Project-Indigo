@@ -144,7 +144,7 @@ namespace Gameplay
             {
 
                 Vector3 point = targetPosition + (rb.linearVelocity + AccelerationCommand());
-                Debug.Log(Vector3.Distance(targetPosition, rb.linearVelocity + AccelerationCommand()));
+               
                 if (Vector3.Distance(targetPosition, rb.linearVelocity + AccelerationCommand()) < 4000f)
                 {
                     targetImage.color = Color.red;

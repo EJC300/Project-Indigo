@@ -25,13 +25,17 @@ public class BasicSmartBomb : MonoBehaviour
     private Vector3 targetAcceleration;
 
     private float seekerSeconds;
-
-
+    private bool launch = true;
+    private Collider collider;
 
 
     public void SetPlatformVelocity(Vector3 velocity)
     {
-        platformVelocity = velocity;
+        if (launch)
+        {
+            launch = false;
+            platformVelocity = velocity;
+        }
     }
 
 
@@ -42,13 +46,13 @@ public class BasicSmartBomb : MonoBehaviour
         if (rb == null)
             rb = GetComponent<Rigidbody>();
 
-
+        collider = rb.GetComponentInChildren<Collider>();
         seekerSeconds = seekerActivationTime;
        
 
       
            
-            previousTargetPosition = targetPosition;
+       previousTargetPosition = targetPosition;
         
     }
 
@@ -67,21 +71,22 @@ public class BasicSmartBomb : MonoBehaviour
         Seek();
     }
 
-    public void BeginFlight(bool launch)
+    public void BeginFlight()
     {
         if (launch)
         {
+
             rb.linearVelocity = platformVelocity;
-            launch = false;
+        
         }
+        
     }
     private void Seek()
     {
         if (seekerSeconds <= 0)
         {
             Vector3 accelCmd = AccelerationCommand();
-
-            // Combine current velocity/forward with the guidance acceleration command
+            collider.isTrigger = false;
             Vector3 desiredDirection = (rb.linearVelocity + accelCmd).normalized;
             if (desiredDirection == Vector3.zero)
             {
@@ -91,11 +96,12 @@ public class BasicSmartBomb : MonoBehaviour
             Quaternion targetRotation = Quaternion.LookRotation(desiredDirection);
             float turnStep = missileTurnRate * Time.fixedDeltaTime;
 
-            // Smoothly rotate towards the target guidance vector
+            
             rb.MoveRotation(Quaternion.RotateTowards(rb.rotation, targetRotation, turnStep));
         }
         else
         {
+            collider.isTrigger = true;
             seekerSeconds -= Time.fixedDeltaTime;
         }
     }
@@ -107,11 +113,11 @@ public class BasicSmartBomb : MonoBehaviour
         float dt = Time.fixedDeltaTime;
         if (dt <= 0f) return;
 
-        // Correct velocity and acceleration finite-difference math (divided by dt, not multiplied)
+   
         targetVelocity = (targetPosition - previousTargetPosition) / dt;
         targetAcceleration = (targetVelocity - previousTargetVelocity) / dt;
 
-        // Update previous states for next frame
+ 
         previousTargetVelocity = targetVelocity;
         previousTargetPosition = targetPosition;
     }
@@ -170,9 +176,10 @@ public class BasicSmartBomb : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        Debug.Log(collision.gameObject.name);
         if (collision.gameObject.CompareTag("Player"))
         {
-            Destroy(gameObject);
+           // Destroy(gameObject);
         }
     }
 }

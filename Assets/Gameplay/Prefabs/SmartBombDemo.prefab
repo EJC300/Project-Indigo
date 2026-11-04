@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 9127655347565562225}
   - component: {fileID: 1202970819890034103}
   - component: {fileID: 7723423045088713923}
+  - component: {fileID: 8423283191808385996}
   m_Layer: 0
   m_Name: SmartBombDemo
   m_TagString: Untagged
@@ -79,17 +80,17 @@ MonoBehaviour:
   activate: 0
   RB: {fileID: 9127655347565562225}
   prevVelocity: {x: 0, y: 0, z: 0}
-  wingArea: 200
+  wingArea: 20
   wingAreaYaw: 50
-  liftCoefficient: 0.436
+  liftCoefficient: 0.124
   liftCoefficientYaw: 0.269
   rho: 1
   maxAngleAttack: 15
   maxAngleAttackYaw: 15
   aspectRatio: 0.453
-  efficiencyFactor: 0.588
-  dragUpCoefficient: 0.376
-  dragForwardCoefficient: 0.499
+  efficiencyFactor: 0.376
+  dragUpCoefficient: 0.75
+  dragForwardCoefficient: 0.372
   dragLeftCoefficient: 0.906
 --- !u!114 &7723423045088713923
 MonoBehaviour:
@@ -107,6 +108,23 @@ MonoBehaviour:
   body: {fileID: 1202970819890034103}
   rb: {fileID: 9127655347565562225}
   originShift: {fileID: 0}
+--- !u!114 &8423283191808385996
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1141316081308563824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 291acdca1b1e42c48b518415bd6c53f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BasicSmartBomb
+  targetPosition: {x: 0, y: 0, z: 0}
+  seekerActivationTime: 1
+  navConstant: 5
+  missileTurnRate: 5
+  rb: {fileID: 9127655347565562225}
 --- !u!1001 &7016874822356293759
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -117,27 +135,27 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: c9cf67f0ccd723048b23b552a2a61738, type: 3}
       propertyPath: m_LocalScale.x
-      value: 6.975488
+      value: 1.1650195
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c9cf67f0ccd723048b23b552a2a61738, type: 3}
       propertyPath: m_LocalScale.y
-      value: 13.093988
+      value: 2.0344
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c9cf67f0ccd723048b23b552a2a61738, type: 3}
       propertyPath: m_LocalScale.z
-      value: 13.093988
+      value: 2.0344
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c9cf67f0ccd723048b23b552a2a61738, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.82
+      value: -0.82073
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c9cf67f0ccd723048b23b552a2a61738, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.00021711
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c9cf67f0ccd723048b23b552a2a61738, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0.00050088
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c9cf67f0ccd723048b23b552a2a61738, type: 3}
       propertyPath: m_LocalRotation.w
@@ -212,5 +230,5 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.20787677, y: 0.08046981, z: 0.06634008}
-  m_Center: {x: -0.00090487674, y: -0.00028389323, z: 0.00024555254}
+  m_Size: {x: 0.21491429, y: 0.030951094, z: 0.026364358}
+  m_Center: {x: -0.0044236463, y: -0.0010503108, z: 0.00015584308}

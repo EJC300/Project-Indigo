@@ -486,7 +486,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3001755176552162124}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7ac024c2af8853741980973eb735e528, type: 3}
   m_Name: 
@@ -527,10 +527,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 248ca902bcfd66a45bbcc5d7ea283572, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Gameplay.DemoBombLauncher
+  targetTracker: {fileID: 0}
   rb: {fileID: 6621080791113425423}
   pylonLeft: {fileID: 3146321740660480606}
   pylonRight: {fileID: 1853389658633130631}
   ammo: 2
+  bombPrefab: {fileID: 0}
 --- !u!1 &3558532645882418497
 GameObject:
   m_ObjectHideFlags: 0
@@ -724,7 +726,7 @@ Transform:
   m_GameObject: {fileID: 4695560378998365080}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.54, y: 0, z: 0.32}
+  m_LocalPosition: {x: -1.52, y: -0.25, z: 1.26}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1382,7 +1384,7 @@ Transform:
   m_GameObject: {fileID: 7262271344128287185}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.54, y: 0, z: 0.32}
+  m_LocalPosition: {x: 1.5599203, y: -0.25000727, z: 1.2599899}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

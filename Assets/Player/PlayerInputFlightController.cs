@@ -15,7 +15,7 @@ namespace Player
         [SerializeField] private PlaneController aircraftController;
 
         [SerializeField] private ThirdPersonCamera thirdPersonCamera;
-
+        [SerializeField] private string testBombLaunchName;
         [SerializeField] string lookName;
         [SerializeField] string pitchName;
         [SerializeField] string yawName;
@@ -113,7 +113,7 @@ namespace Player
         void YawInput()
         {
             float yaw = yawAction.ReadValue<float>();
-           aircraftController.SetYaw(yaw);
+            aircraftController.SetYaw(yaw);
 
         }
 

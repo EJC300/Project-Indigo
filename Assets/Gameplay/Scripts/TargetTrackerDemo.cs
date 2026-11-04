@@ -1,7 +1,11 @@
 using System.Collections.Generic;
+using System.Drawing;
 using System.Reflection;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using Utilities;
+using Color = UnityEngine.Color;
 
 namespace Gameplay
 {
@@ -23,15 +27,17 @@ namespace Gameplay
         [SerializeField] private RectTransform targetCross;
 
         [SerializeField] private RectTransform targetHUD;
+        [SerializeField] private TextMeshProUGUI shootText;
 
+        [SerializeField] private Image targetImage;
 
         private Vector3 targetPosition;
         private Vector3 previousTargetPosition;
         private Vector3 targetVelocity;
         private Vector3 previousTargetVelocity;
         private Vector3 targetAcceleration;
-   
 
+        public Vector3 targetPoint;
 
         public static WaypointTrackerHUD instance;
 
@@ -46,7 +52,7 @@ namespace Gameplay
         private void Awake()
         {
 
-     
+
         }
         private void FixedUpdate()
         {
@@ -57,14 +63,14 @@ namespace Gameplay
         {
 
             RunTarget();
-              
+
         }
         private void TargetAcceleration()
         {
             float dt = Time.fixedDeltaTime;
             if (dt <= 0f) return;
 
-     
+
             targetVelocity = (targetPosition - previousTargetPosition) / dt;
             targetAcceleration = (targetVelocity - previousTargetVelocity) / dt;
 
@@ -72,14 +78,14 @@ namespace Gameplay
             previousTargetPosition = targetPosition;
         }
 
-     
+
 
         private Vector3 AccelerationCommand()
         {
             Vector3 relativePosition = targetPosition - transform.position;
             Vector3 relVel = targetVelocity - rb.linearVelocity;
 
-  
+
             float closingSpeed = -Vector3.Dot(relVel, relativePosition.normalized);
             float timeUntilImpact = closingSpeed > 0.01f ? relativePosition.magnitude / closingSpeed : 1f;
             timeUntilImpact = Mathf.Clamp(timeUntilImpact, 0.05f, 5.0f); // Safety clamps
@@ -96,7 +102,7 @@ namespace Gameplay
             Vector3 zeroEffortMissLOS = Vector3.Project(zeroEffortMiss, unitLOS);
             Vector3 zeroEffortNormal = zeroEffortMiss - zeroEffortMissLOS;
 
-       
+
             float bias = AccelerationBias();
             float denominator = (timeUntilImpact * timeUntilImpact + bias);
             if (Mathf.Abs(denominator) < 0.0001f) denominator = 0.0001f;
@@ -129,16 +135,29 @@ namespace Gameplay
 
             Vector3 point = (demoTarget.transform.position);
             targetBox.localEulerAngles = new Vector3(0, 0, -cameraRoll);
-
+            targetCross.localEulerAngles = new Vector3(0, 0, -cameraRoll);
         }
 
         void TargetCross()
         {
             if (GameController.gameController.alive)
             {
-                Vector3 point = targetPosition + (rb.linearVelocity + AccelerationCommand()).normalized;
+
+                Vector3 point = targetPosition + (rb.linearVelocity + AccelerationCommand());
+                Debug.Log(Vector3.Distance(targetPosition, rb.linearVelocity + AccelerationCommand()));
+                if (Vector3.Distance(targetPosition, rb.linearVelocity + AccelerationCommand()) < 4000f)
+                {
+                    targetImage.color = Color.red;
+                    shootText.enabled = true;
+                }
+                else
+                {
+                    shootText.enabled = false;
+                    targetImage.color = Color.green;
+                }
+              
                 float distanceMultiplier = Mathf.InverseLerp(500, 50, (point - transform.position).magnitude);
-                targetCross. transform.localScale = Vector3.one * Mathf.Max(0.5f, distanceMultiplier) * 2;
+                targetCross.transform.localScale = Vector3.one * Mathf.Max(0.5f, distanceMultiplier) * 2;
 
                 Vector3 HUDPoint = MathHelpers.TransformToHUDSpace(point, Camera.main);
 
@@ -166,10 +185,13 @@ namespace Gameplay
 
 
                 }
+                targetPoint = point;
                 targetCross.anchoredPosition = HUDPoint;
 
             }
+
         }
+    
         void TargetBox()
         {
             if (GameController.gameController.alive)
